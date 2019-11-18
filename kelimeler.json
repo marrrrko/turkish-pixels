@@ -1,0 +1,116 @@
+[
+    {
+        "id": "6a141b02-9f5f-413d-9a4e-e89db775c84d",
+        "type": "common noun",
+        "english": "home",
+        "turkish": "ev"
+    },
+    {
+        "id": "2df55575-8cce-4803-b03d-f23eac8c8d39",
+        "type": "common noun",
+        "english": "work",
+        "turkish": "iş"
+    },
+    {
+        "id": "a9715cf9-b311-4b7c-bfcf-a87c7c4aac95",
+        "type": "verb",
+        "english": "to go",
+        "turkish": "gitmek",
+        "applicableObjects": ["6a141b02-9f5f-413d-9a4e-e89db775c84d", "2df55575-8cce-4803-b03d-f23eac8c8d39"]
+    },
+    {
+        "id": "c1ccdd2f-5a50-42fe-9057-1d26ad5b3e0f",
+        "type": "verb",
+        "english": "to come",
+        "turkish": "gelmek",
+        "applicableObjects": ["6a141b02-9f5f-413d-9a4e-e89db775c84d", "2df55575-8cce-4803-b03d-f23eac8c8d39"]
+    },
+    {
+        "id": "497983f0-6afb-4cc6-a6a5-e3ac7dcce870",
+        "type": "tense",
+        "english": "present continuous",
+        "turkish": "şimdiki"
+    },
+    {
+        "id": "e6018947-bbff-4b59-b6a3-84289c35cde4",
+        "type": "tense",
+        "english": "present simple",
+        "turkish": "geniş"
+    },
+    {
+        "id": "baf9fa73-98bd-42ac-acad-5d07846d3876",
+        "type": "tense",
+        "english": "past",
+        "turkish": "geçmiş"
+    },
+    {
+        "id": "358b3926-290c-4160-b0a5-db5bf9d9b567",
+        "type": "tense",
+        "english": "future",
+        "turkish": "gelecek"
+    },
+    {
+        "id": "3e28ffa5-c650-4b42-b5b7-a2229da28ca5",
+        "type": "pronoun",
+        "english": "I",
+        "turkish": "ben",
+        "person": 1,
+        "isPlural": false
+    },
+    {
+        "id": "79a25760-83c7-421e-b89b-70aea99c0e53",
+        "type": "pronoun",
+        "english": "you",
+        "turkish": "sen",
+        "person": 2,
+        "isPlural": false
+    },
+    {
+        "id": "240769ba-9512-40f1-9015-edd226b8c81c",
+        "type": "pronoun",
+        "english": "he",
+        "turkish": "o",
+        "person": 3,
+        "isPlural": false
+    },
+    {
+        "id": "da2ee6d6-0c2c-431f-be48-14f0145eb7e5",
+        "type": "pronoun",
+        "english": "she",
+        "turkish": "o",
+        "person": 3,
+        "isPlural": false
+    },
+    {
+        "id": "532ff214-53f5-477a-9fd0-97c84b1ff035",
+        "type": "pronoun",
+        "english": "it",
+        "turkish": "o",
+        "person": 3,
+        "isPlural": false
+    },
+    {
+        "id": "7c2897d2-adde-4ddb-bf93-42851e16536e",
+        "type": "pronoun",
+        "english": "we",
+        "turkish": "biz",
+        "person": 1,
+        "isPlural": true
+    },
+    {
+        "id": "7126c189-cbf8-4c22-bd16-b692e06c533a",
+        "type": "pronoun",
+        "english": "you",
+        "turkish": "siz",
+        "person": 2,
+        "isPlural": true
+    },
+    {
+        "id": "9808661c-935c-40da-bd43-c55317222a10",
+        "type": "pronoun",
+        "english": "they",
+        "turkish": "onlar",
+        "person": 3,
+        "isPlural": true
+    }
+]
