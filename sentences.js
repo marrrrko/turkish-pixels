@@ -9,7 +9,7 @@ const rl = readline.createInterface({
   });
 
 async function loadWordDatabase() {    
-    let wordData = await readFileAsync(__dirname + '/kelimeler.json', 'utf-8')
+    let wordData = await readFileAsync(__dirname + '/words.json', 'utf-8')
     let wordJSON = JSON.parse(wordData)
     //console.log(`Loaded ${wordJSON.length} turkish words.`)
     return wordJSON
