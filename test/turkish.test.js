@@ -1,5 +1,6 @@
 const test = require('blue-tape')
 const turkish = require('../turkish')
+const vocabulary = require('../vocabulary')
 
 test('charIsInLetterGroup', async function(t) {
     t.ok(turkish.charIsInLetterGroup('a', turkish.LETTER_GROUPS.VOWELS), "a is a vowel")
@@ -49,4 +50,26 @@ test('appendSuffixToWord', async function(t) {
     t.equal(turkish.appendSuffixToWord("oku", "_yorsun", 4), "okuyorsun")
     //t.equal(turkish.appendSuffixToWord("", "", 4), "")
     //t.equal(turkish.appendSuffixToWord("", "", 4), "")
+})
+
+test("conjugateVerb", async function(t) {
+    let wordDatabase = await vocabulary.loadWordDatabase()
+    
+    let presentContinuous = wordDatabase.getVerbTenseByEnglishName("present continuous")
+
+    let toCome = wordDatabase.getVerbByEnglishName("to come")
+    let toGo = wordDatabase.getVerbByEnglishName("to go")
+    let toWant = wordDatabase.getVerbByEnglishName("to want")
+    
+    t.equal(
+        turkish.conjugateVerb(toCome, presentContinuous, 2, false),
+        "geliyorsun")
+
+    t.equal(
+        turkish.conjugateVerb(toGo, presentContinuous, 1, true),
+        "gidiyoruz")
+
+    t.equal(
+        turkish.conjugateVerb(toWant, presentContinuous, 1, false),
+        "istiyorum")
 })

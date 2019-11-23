@@ -60,16 +60,24 @@ function harmonize4(word) {
 }
 
 function appendSuffixToWord(word, suffixPattern) {
-    let suffixes = [softenIfNeeded(word, suffixPattern)]
+    let suffixes = []
+    let prefix = softenIfNeeded(word, suffixPattern)
 
     if(suffixPattern.startsWith("_yor")) {
-        suffixes.push(getPresentContinuousSuffix(word, suffixPattern))
+        let wordEndsInVowel = wordEndsWithLetterFromGroup(prefix, LETTER_GROUPS.VOWELS)
+        if(wordEndsInVowel) {
+            prefix = prefix.trim().slice(0,-1)
+        } 
+
+        let harmonizedVowel = harmonize4(word)
+        suffixes.push(suffixPattern.replace("_", harmonizedVowel))
+        
     } else if (suffixPattern == "l_r") {
         let harmonizedVowel = harmonize2(word)
         suffixes.push(suffixPattern.replace("_", harmonizedVowel))
     }
 
-    return suffixes.join("")
+    return [prefix].concat(suffixes).join("")
 }
 
 function softenIfNeeded(word, suffixPattern) {
@@ -93,19 +101,6 @@ function softenIfNeeded(word, suffixPattern) {
     return softenedWord
 }
 
-function getPresentContinuousSuffix(word, suffixPattern) {
-    let targetSuffix
-    let wordEndsInVowel = wordEndsWithLetterFromGroup(word, LETTER_GROUPS.VOWELS)
-    if(wordEndsInVowel) {
-        targetSuffix = suffixPattern.replace("_","")
-    } else {
-        let harmonizedVowel = harmonize4(word)
-        targetSuffix = suffixPattern.replace("_", harmonizedVowel)
-    }
-
-    return targetSuffix
-}
-
 function getVerbRoot(infinitiveVerb) {
     let suffix = infinitiveVerb.trim().toLowerCase().slice(-3)
     if(suffix != "mek" && suffix != "mak") {
@@ -115,6 +110,53 @@ function getVerbRoot(infinitiveVerb) {
     return infinitiveVerb.trim().slice(0, -3)
 }
 
+function conjugateVerb(verb, tense, person, isPlural) {
+    switch(tense.english) {
+        case "present continuous":
+            return conjugatePresentContinuousVerb(verb, person, isPlural)
+        default:
+            throw new Error("Sorry. I don't know how to conjugate that.")
+    }
+}
+
+function conjugatePresentContinuousVerb(verb, person, isPlural) {
+    let rootWord = getVerbRoot(verb.turkish)
+    let word = appendSuffixToWord(rootWord,"_yor", 4)
+
+    let verbPersonSuffix
+    if(isPlural) {
+        switch(person) {
+            case 1:
+                verbPersonSuffix = "uz"
+                break
+            case 2:
+                verbPersonSuffix = "sunuz"
+                break
+            case 3:
+                verbPersonSuffix = "lar"
+                break
+            default:
+                throw new Error("I can't conjugate that")
+        }
+    } else {
+        switch(person) {
+            case 1:
+                verbPersonSuffix = "um"
+                break
+            case 2:
+                verbPersonSuffix = "sun"
+                break
+            case 3:
+                verbPersonSuffix = ""
+                break
+            default:
+                throw new Error("I can't conjugate that")
+        }
+    }
+
+    return `${word}${verbPersonSuffix}`
+}
+
 module.exports = {
     LETTER_GROUPS,
     charIsInLetterGroup,
@@ -122,6 +164,7 @@ module.exports = {
     harmonize4,
     harmonize2,
     appendSuffixToWord,
-    getVerbRoot
+    getVerbRoot,
+    conjugateVerb
 }
 

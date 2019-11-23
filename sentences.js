@@ -1,5 +1,4 @@
-
-const fs = require('fs')
+const vocabulary = require('./vocabulary')
 const _ = require('lodash')
 const turkish = require('./turkish')
 const readline = require('readline')
@@ -8,31 +7,10 @@ const rl = readline.createInterface({
     output: process.stdout
   });
 
-async function loadWordDatabase() {    
-    let wordData = await readFileAsync(__dirname + '/words.json', 'utf-8')
-    let wordJSON = JSON.parse(wordData)
-    //console.log(`Loaded ${wordJSON.length} turkish words.`)
-    return wordJSON
-}
 
-function readFileAsync(filename, encoding) {
-    return new Promise(function(resolve, reject) {
-        fs.readFile(filename, encoding, function(err, data) {
-            if(err)
-                reject(err)
-            else
-                resolve(data)
-        })
-    })
-}
 
-async function runProgram() {
-    let words = {}
-    words.all = await loadWordDatabase()
-    words.verbs = words.all.filter(w => w.type == "verb")
-    words.commonNouns = words.all.filter(w => w.type == "common noun")
-    words.verbTenses = words.all.filter(w => w.type == "tense")
-    words.pronouns = words.all.filter(w => w.type == "pronoun")
+async function runAsCommandLineProgram() {
+    let words = await vocabulary.loadWordDatabase()
 
     //let sentence = buildVerbSubjectObjectSentence(words, words.verbTenses)
     let sentence = buildVerbSubjectSentence(words, words.verbTenses.filter(t => t.english == "present continuous"))
@@ -48,30 +26,37 @@ async function runProgram() {
     }
     console.log(`  Subject: ${sentence.subject.english}${subjectHint}`)
     console.log(`  Tense: ${sentence.tense.english}`)
-    rl.question('\nHit enter to view the answer ', (answer) => {      
-        console.log(`\t${sentence.translation}`)
-        rl.close();
-    });
+    await new Promise(function(resolve, reject) {
+        rl.question('\nHit enter to view the answer ', (answer) => {      
+            console.log(`\n  ${sentence.translation}\n`)
+            rl.close();
+            resolve()
+        });
+    })
 }
 
-function buildVerbSubjectObjectSentence(words) {
+function buildVerbSubjectObjectSentence(wordDatabase) {
     let sentence = {}
-    sentence.verb = _.sample(words.verbs)
-    sentence.tense = _.sample(words.verbTenses)
-    sentence.subject = _.sample(words.pronouns)
+    sentence.verb = _.sample(wordDatabase.verbs)
+    sentence.tense = _.sample(wordDatabase.verbTenses)
+    sentence.subject = _.sample(wordDatabase.pronouns)
     let objectId = _.sample(sentence.verb.applicableObjects)
-    sentence.object = _.find(words.commonNouns, n => n.id == objectId)
+    sentence.object = _.find(wordDatabase.commonNouns, n => n.id == objectId)
 
     return sentence
 }
 
-function buildVerbSubjectSentence(words, allowedTenses) {
+function buildVerbSubjectSentence(wordDatabase, allowedTenses) {
     let sentence = {}
-    sentence.verb = _.sample(words.verbs)
-    sentence.tense = _.sample(allowedTenses)
-    sentence.subject = _.sample(words.pronouns)
 
-    let conjugatedVerb = conjugateVerb(
+    if(allowedTenses == null)
+        allowedTenses = wordDatabase.verbTenses
+
+    sentence.verb = _.sample(wordDatabase.verbs)
+    sentence.tense = _.sample(allowedTenses)
+    sentence.subject = _.sample(wordDatabase.pronouns)
+
+    let conjugatedVerb = turkish.conjugateVerb(
         sentence.verb,
         sentence.tense,
         sentence.subject.person,
@@ -82,65 +67,19 @@ function buildVerbSubjectSentence(words, allowedTenses) {
     return sentence
 }
 
-function conjugateVerb(verb, tense, person, isPlural) {
-    switch(tense.english) {
-        case "present continuous":
-            return conjugatePresentContinuousVerb(verb, person, isPlural)
-        default:
-            throw new Error("Sorry. I don't know how to conjugate that.")
-    }
-}
-
-function conjugatePresentContinuousVerb(verb, person, isPlural) {
-    let rootWord = turkish.getVerbRoot(verb.turkish)
-    let word = turkish.appendSuffixToWord(rootWord,"_yor", 4)
-    // let suffix1 = ""
-    // let lastLetterOfRootWord = rootWord.trim().slice(-1)
-    // if(turkish.isVowel(lastLetterOfRootWord)) {
-    //     suffix1 = "y"
-    // }
-    // let suffix2 = turkish.harmonize4(rootWord)
-    // let suffix3 = "yor"
-    let verbPersonSuffix
-    if(isPlural) {
-        switch(person) {
-            case 1:
-                verbPersonSuffix = "uz"
-                break
-            case 2:
-                verbPersonSuffix = "sunuz"
-                break
-            case 3:
-                verbPersonSuffix = "lar"
-                break
-            default:
-                throw new Error("I can't conjugate that")
-        }
-    } else {
-        switch(person) {
-            case 1:
-                verbPersonSuffix = "um"
-                break
-            case 2:
-                verbPersonSuffix = "sun"
-                break
-            case 3:
-                verbPersonSuffix = ""
-                break
-            default:
-                throw new Error("I can't conjugate that")
-        }
-    }
-
-    return `${word}${verbPersonSuffix}`
-}
-
-function startProgram() {
+if (require.main === module) {
     Promise.resolve()
-    .then(runProgram)
+    .then(runAsCommandLineProgram)
     .catch(function(e) {
         console.error("An error occurred.", e)
+        return 1
+    })
+    .then(function(errorCode) {
+        process.exit(errorCode || 0)
     })
 }
 
-startProgram()
+module.exports = {
+    buildVerbSubjectSentence,
+    buildVerbSubjectObjectSentence
+}

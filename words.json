@@ -26,6 +26,48 @@
         "applicableObjects": ["6a141b02-9f5f-413d-9a4e-e89db775c84d", "2df55575-8cce-4803-b03d-f23eac8c8d39"]
     },
     {
+        "id": "e516659d-073b-4bda-a388-2b4280b46f50",
+        "type": "verb",
+        "english": "to do",
+        "turkish": "yapmak",
+        "applicableObjects": []
+    },
+    {
+        "id": "b8a51771-ec36-4f33-be45-ed59271ccf31",
+        "type": "verb",
+        "english": "to take",
+        "turkish": "almak",
+        "applicableObjects": []
+    },
+    {
+        "id": "8058cba6-0a55-4337-a1c9-c9f89711d4fe",
+        "type": "verb",
+        "english": "to want",
+        "turkish": "istemek",
+        "applicableObjects": []
+    },
+    {
+        "id": "cf4eeadc-1484-4970-98c1-9bea52779f6b",
+        "type": "verb",
+        "english": "to work",
+        "turkish": "çalışmak",
+        "applicableObjects": []
+    },
+    {
+        "id": "8074f084-1661-4450-b0d6-b0e2ee0a214f",
+        "type": "verb",
+        "english": "bilmek",
+        "turkish": "to know",
+        "applicableObjects": []
+    },
+    {
+        "id": "abe4f58e-3efe-425b-8ac6-273ce1ef5004",
+        "type": "verb",
+        "english": "to speak",
+        "turkish": "konuşmak",
+        "applicableObjects": []
+    },
+    {
         "id": "497983f0-6afb-4cc6-a6a5-e3ac7dcce870",
         "type": "tense",
         "english": "present continuous",
