@@ -60,6 +60,9 @@ test("conjugateVerb", async function(t) {
     let toCome = wordDatabase.getVerbByEnglishName("to come")
     let toGo = wordDatabase.getVerbByEnglishName("to go")
     let toWant = wordDatabase.getVerbByEnglishName("to want")
+    let toKnow = wordDatabase.getVerbByEnglishName("to know")
+    let toTake = wordDatabase.getVerbByEnglishName("to take")
+    let toRead = wordDatabase.getVerbByEnglishName("to read")
     
     t.equal(
         turkish.conjugateVerb(toCome, presentContinuous, 2, false),
@@ -72,4 +75,33 @@ test("conjugateVerb", async function(t) {
     t.equal(
         turkish.conjugateVerb(toWant, presentContinuous, 1, false),
         "istiyorum")
+
+    t.equal(
+        turkish.conjugateVerb(toKnow, presentContinuous, 2, true, false, true),
+        "biliyor musunuz")
+
+    t.equal(
+        turkish.conjugateVerb(toTake, presentContinuous, 2, false, true, false),
+        "almıyorsun"
+    )
+
+    t.equal(
+        turkish.conjugateVerb(toTake, presentContinuous, 1, true, true, true),
+        "almıyor muyuz"
+    )
+
+    t.equal(
+        turkish.conjugateVerb(toRead, presentContinuous, 3, false, false, true),
+        "okuyor mu"
+    )
+
+    t.equal(
+        turkish.conjugateVerb(toRead, presentContinuous, 1, true, true, false),
+        "okumuyoruz"
+    )
+
+    t.equal(
+        turkish.conjugateVerb(toRead, presentContinuous, 2, true, true, true),
+        "okumuyor musunuz"
+    )
 })

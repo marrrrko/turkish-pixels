@@ -75,6 +75,9 @@ function appendSuffixToWord(word, suffixPattern) {
     } else if (suffixPattern == "l_r") {
         let harmonizedVowel = harmonize2(word)
         suffixes.push(suffixPattern.replace("_", harmonizedVowel))
+    } else {
+        let harmonizedVowel = harmonize4(word)
+        suffixes.push(suffixPattern.replace("_", harmonizedVowel))
     }
 
     return [prefix].concat(suffixes).join("")
@@ -110,51 +113,38 @@ function getVerbRoot(infinitiveVerb) {
     return infinitiveVerb.trim().slice(0, -3)
 }
 
-function conjugateVerb(verb, tense, person, isPlural) {
+function conjugateVerb(verb, tense, person, isPlural, negativeForm, questionForm) {
     switch(tense.english) {
         case "present continuous":
-            return conjugatePresentContinuousVerb(verb, person, isPlural)
+            return conjugatePresentContinuousVerb(verb, person, isPlural, negativeForm, questionForm)
         default:
             throw new Error("Sorry. I don't know how to conjugate that.")
     }
 }
 
-function conjugatePresentContinuousVerb(verb, person, isPlural) {
+function conjugatePresentContinuousVerb(verb, person, isPlural, negativeForm, questionForm) {
+    let expression = []
     let rootWord = getVerbRoot(verb.turkish)
-    let word = appendSuffixToWord(rootWord,"_yor", 4)
+    
+    if(negativeForm)
+        expression.push(appendSuffixToWord(rootWord,"m_yor", 4))
+    else 
+        expression.push(appendSuffixToWord(rootWord,"_yor", 4))
 
-    let verbPersonSuffix
+    if(questionForm) {
+        expression.push(" ")
+        expression.push("mu")
+        if(person == 1)
+            expression.push("y")
+    }
+    
     if(isPlural) {
-        switch(person) {
-            case 1:
-                verbPersonSuffix = "uz"
-                break
-            case 2:
-                verbPersonSuffix = "sunuz"
-                break
-            case 3:
-                verbPersonSuffix = "lar"
-                break
-            default:
-                throw new Error("I can't conjugate that")
-        }
+        expression.push(["uz", "sunuz", "lar"][person - 1])
     } else {
-        switch(person) {
-            case 1:
-                verbPersonSuffix = "um"
-                break
-            case 2:
-                verbPersonSuffix = "sun"
-                break
-            case 3:
-                verbPersonSuffix = ""
-                break
-            default:
-                throw new Error("I can't conjugate that")
-        }
+        expression.push(["um", "sun", ""][person - 1])
     }
 
-    return `${word}${verbPersonSuffix}`
+    return expression.join("")
 }
 
 module.exports = {

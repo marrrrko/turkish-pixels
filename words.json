@@ -12,6 +12,12 @@
         "turkish": "iş"
     },
     {
+        "id":"ac25a465-1bf0-4cc3-ab93-f6b163d2c763",
+        "type": "common noun",
+        "english": "book",
+        "turkish": "kitap"
+    },
+    {
         "id": "a9715cf9-b311-4b7c-bfcf-a87c7c4aac95",
         "type": "verb",
         "english": "to go",
@@ -56,8 +62,8 @@
     {
         "id": "8074f084-1661-4450-b0d6-b0e2ee0a214f",
         "type": "verb",
-        "english": "bilmek",
-        "turkish": "to know",
+        "english": "to know",
+        "turkish": "bilmek",
         "applicableObjects": []
     },
     {
@@ -66,6 +72,13 @@
         "english": "to speak",
         "turkish": "konuşmak",
         "applicableObjects": []
+    },
+    {
+        "id": "a889a812-49d0-412a-8468-1fc4a784a101",
+        "type": "verb",
+        "english": "to read",
+        "turkish": "okumak",
+        "applicableObjects": ["ac25a465-1bf0-4cc3-ab93-f6b163d2c763"]
     },
     {
         "id": "497983f0-6afb-4cc6-a6a5-e3ac7dcce870",
