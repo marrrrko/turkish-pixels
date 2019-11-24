@@ -81,6 +81,13 @@
         "applicableObjects": ["ac25a465-1bf0-4cc3-ab93-f6b163d2c763"]
     },
     {
+        "id":"aed9297a-4495-445c-9cc5-84e279e98cee",
+        "type": "verb",
+        "english": "to see",
+        "turkish": "görmek",
+        "applicableObjects": []
+    },
+    {
         "id": "497983f0-6afb-4cc6-a6a5-e3ac7dcce870",
         "type": "tense",
         "english": "present continuous",
