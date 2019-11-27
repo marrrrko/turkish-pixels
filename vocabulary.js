@@ -13,12 +13,16 @@ async function loadWordDatabase() {
     wordDatabase.verbTenses = wordJSON.filter(w => w.type == "tense")
     wordDatabase.pronouns = wordJSON.filter(w => w.type == "pronoun")
 
-    wordDatabase.getVerbByEnglishName = function(english) {
+    wordDatabase.getVerbByEnglishText = function(english) {
         return _.find(wordDatabase.verbs, v => v.english == english)
     }
 
     wordDatabase.getVerbTenseByEnglishName = function(english) {
         return _.find(wordDatabase.verbTenses, vt => vt.english == english)
+    }
+
+    wordDatabase.getVerbByTurkishText = function(turkish) {
+        return _.find(wordDatabase.verbs, v => v.turkish == turkish)
     }
 
     return wordDatabase

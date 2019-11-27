@@ -83,21 +83,16 @@ function appendSuffixToWord(word, suffixPattern) {
     return [prefix].concat(suffixes).join("")
 }
 
+const softeningExceptions = ["git", "tat", "dit", "et", "güt"]
 function softenIfNeeded(word, suffixPattern) {
-
     let softenedWord = word
 
-    let lastLetterOfWord = getLastLetter(word)
-    let mightNeedsSoftening = charIsInLetterGroup(
-                                lastLetterOfWord,
-                                LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS)
-    if(mightNeedsSoftening) {
+    let qualifiesForSoftening = softeningExceptions.includes(word.toLowerCase().trim())
+    if(qualifiesForSoftening) {
         let firstLetterOfSuffix = suffixPattern.trim().slice(0,1)
         let startsWithVowel = charIsInLetterGroup(firstLetterOfSuffix, LETTER_GROUPS.VOWELS)
-        if(startsWithVowel || firstLetterOfSuffix == "_") {
-            let consonantIndex = LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS.indexOf(lastLetterOfWord)
-            let replacementConsonant = LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS_VOWEL_MATCHES[consonantIndex]
-            softenedWord = word.trim().slice(0,-1) + replacementConsonant
+        if(startsWithVowel || firstLetterOfSuffix == "_") {            
+            softenedWord = word.trim().slice(0,-1) + "d"
         }
     }
 
