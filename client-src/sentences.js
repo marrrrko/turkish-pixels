@@ -1,14 +1,14 @@
 const vocabulary = require('./vocabulary')
 const _ = require('lodash')
 const turkish = require('./turkish')
-const readline = require('readline')
+
 const delay = function(delay) {
     return new Promise(function(resolve) {
         setTimeout(() => resolve(), delay)
     })
 }
 async function runAsCommandLineProgram() {
-    let wordDatabase = await vocabulary.loadWordDatabase()
+    let wordDatabase = await vocabulary.loadWordDatabaseFromFile()
 
     while(true) {
         await askARandomTurkishQuestion(wordDatabase)
@@ -48,6 +48,7 @@ async function askARandomTurkishQuestion(wordDatabase) {
         tenseHint = `, ${tenseHints.join(" ")}`
     console.log(`  Tense: ${sentence.tense.english}${tenseHint}`)
 
+    let readline = require('readline')
     await new Promise(function(resolve, reject) {
         rl = readline.createInterface({ input: process.stdin, output: process.stdout })
         rl.question('', (answer) => {      

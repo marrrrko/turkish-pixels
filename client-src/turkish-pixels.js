@@ -1,3 +1,6 @@
+import * as PIXI from 'pixi.js'
+import * as vocabulary from './vocabulary'
+import * as sentences from './sentences'
 
 function docReady(fn) {
     if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -72,7 +75,8 @@ function init() {
             width: 256,
             height: 256,
             antialias: true,
-            resolution: resolutionFactor
+            resolution: resolutionFactor,
+
         })
         app.renderer.view.style.position = "absolute";
         app.renderer.view.style.display = "block";
@@ -87,7 +91,7 @@ function init() {
         });
 
         PIXI.loader
-            .add('LPC_house_interior/interior.png')
+            .add('assets/LPC_house_interior/interior.png')
             .load(setTheStage)
     }
 
@@ -102,13 +106,42 @@ function init() {
             app.stage.addChild(screen)
         })
 
-        let nextButton = createNextButton()
-        app.stage.addChild(nextButton)
-
 
         app.renderer.render(app.stage)
         app.ticker.add(delta => gameLoop(delta))
+        startTheGame()
     }
+
+    async function startTheGame() {
+        let wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
+        let sentence = sentences.buildVerbSubjectSentence(
+            wordDatabase,
+            wordDatabase.verbTenses.filter(t => t.english == "present continuous"),
+            _.random(0,1),
+            _.random(0,1))
+
+        let nextButton = createNextButton()
+        app.stage.addChild(nextButton)
+
+        setScreenText(screens[0], `${sentence.verb.english}`)
+        
+        let subjectHint = ""
+        if(sentence.subject.person == 2) {
+            subjectHint = sentence.subject.isPlural ? " (plural)" : " (singular)"
+        }
+        setScreenText(screens[1], `${sentence.subject.english}${subjectHint}`)
+        
+        let tenseHints = []
+        if(sentence.negativeForm)
+            tenseHints.push("negative")
+        if(sentence.questionForm)
+            tenseHints.push("question")
+        
+        let tenseHint = ""
+        if(tenseHints.length)
+            tenseHint = `, ${tenseHints.join(" ")}`
+        setScreenText(screens[2], `${sentence.tense.english}${tenseHint}`)
+    }    
 
     function gameLoop(delta){
 
@@ -125,7 +158,7 @@ function init() {
     }
 
     function createFloorSprite() {
-        let floorTexture = PIXI.loader.resources["LPC_house_interior/interior.png"].texture
+        let floorTexture = PIXI.loader.resources["assets/LPC_house_interior/interior.png"].texture
         let floorFrame = new Rectangle(0, 96, 32, 32)
         floorTexture.frame = floorFrame
         let floorSprite = new PIXI.Sprite(floorTexture)
@@ -228,16 +261,16 @@ function init() {
         let screenConfigs = []
         screenConfigs.push({
             name: "verb",
-            x: app.renderer.width / (2 * resolutionFactor) - (1.3 * screenWidth),
-            y: app.renderer.height / (2 * resolutionFactor) - (0.8 * screenHeight),
+            x: app.renderer.width / (2 * resolutionFactor) - (0.5 * screenWidth),
+            y: app.renderer.height / (2 * resolutionFactor) - (1.8 * screenHeight),
             mainText: "---",
             subText: "Verb"
         })
 
         screenConfigs.push({
             name: "subject",
-            x: app.renderer.width / (2 * resolutionFactor) + (0.3 * screenWidth),
-            y: app.renderer.height / (2 * resolutionFactor) - (0.8 * screenHeight),
+            x: app.renderer.width / (2 * resolutionFactor) - (0.5 * screenWidth),
+            y: app.renderer.height / (2 * resolutionFactor) - (0.5 * screenHeight),
             mainText: "---",
             subText: "Subject"
         })

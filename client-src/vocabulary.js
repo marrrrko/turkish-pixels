@@ -1,9 +1,7 @@
-const fs = require('fs')
 const _ = require('lodash')
 
-async function loadWordDatabase() {    
-    let wordData = await readFileAsync(__dirname + '/words.json', 'utf-8')
-    let wordJSON = JSON.parse(wordData)
+async function prepareDatabaseFromJson(wordJSON) {    
+    
     //console.log(`Loaded ${wordJSON.length} turkish words.`)
 
     let wordDatabase = {}
@@ -28,7 +26,19 @@ async function loadWordDatabase() {
     return wordDatabase
 }
 
+async function loadWordDatabaseFromFile() {
+    let wordData = await readFileAsync(__dirname + '/words.json', 'utf-8')
+    let wordJSON = JSON.parse(wordData)
+    return prepareDatabaseFromJson(wordJSON)
+}
+
+async function loadWordDatabaseFromAPI(url) {    
+    let response = await fetch(url)
+    return await response.json()
+}
+
 function readFileAsync(filename, encoding) {
+    let fs = require('fs')
     return new Promise(function(resolve, reject) {
         fs.readFile(filename, encoding, function(err, data) {
             if(err)
@@ -40,5 +50,6 @@ function readFileAsync(filename, encoding) {
 }
 
 module.exports = {
-    loadWordDatabase
+    loadWordDatabaseFromFile,
+    loadWordDatabaseFromAPI
 }
