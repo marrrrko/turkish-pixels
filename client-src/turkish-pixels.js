@@ -25,13 +25,19 @@ function init() {
         TextStyle = PIXI.TextStyle,
         Rectangle = PIXI.Rectangle
 
-    const primaryTextStyle = new TextStyle({
+    const screenMainTextStyle = new TextStyle({
         fontFamily: "Georgia",
-        fontSize: 36,
+        fontSize: 28,
         fill: "white"
         });
 
-    const subtitleTextStyle = new TextStyle({
+    const answerTextStyle = new TextStyle({
+        fontFamily: "Georgia",
+        fontSize: 28,
+        fill: "black"
+        });
+
+    const screenSubtitleTextStyle = new TextStyle({
         fontFamily: "Courier",
         fontSize: 20,
         fill: "red"
@@ -40,6 +46,8 @@ function init() {
     let app = undefined
     let screens = undefined 
     const resolutionFactor = 2
+    let sentence = undefined
+    let wordDatabase = undefined
 
     function start() {
         let goButtons = document.querySelectorAll(".go-button")
@@ -98,14 +106,10 @@ function init() {
     function setTheStage() {    
         app.stage.addChild(createFloorSprite())
     
-        screens = getVerbSubjectSentenceScreenConfig().map(function(screenConfig) {
-            return createScreenSprite(screenConfig)        
-        })
-        screens.forEach(function(screen) {
-            //setScreenText(screen, "Hello!")
-            app.stage.addChild(screen)
-        })
-
+        screens = createVerbSubjectSentenceScreenArea()
+        screens.x = app.renderer.width / (2 * resolutionFactor) - (screens.width / 2)
+        screens.y = app.renderer.height / (2 * resolutionFactor) - (screens.height / 2)
+        app.stage.addChild(screens)
 
         app.renderer.render(app.stage)
         app.ticker.add(delta => gameLoop(delta))
@@ -113,8 +117,12 @@ function init() {
     }
 
     async function startTheGame() {
-        let wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
-        let sentence = sentences.buildVerbSubjectSentence(
+        wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
+        askAQuestion()
+    }
+
+    function askAQuestion() {
+        sentence = sentences.buildVerbSubjectSentence(
             wordDatabase,
             wordDatabase.verbTenses.filter(t => t.english == "present continuous"),
             _.random(0,1),
@@ -123,13 +131,13 @@ function init() {
         let nextButton = createNextButton()
         app.stage.addChild(nextButton)
 
-        setScreenText(screens[0], `${sentence.verb.english}`)
+        setScreenText(screens.children[0], `${sentence.verb.english}`)
         
         let subjectHint = ""
         if(sentence.subject.person == 2) {
             subjectHint = sentence.subject.isPlural ? " (plural)" : " (singular)"
         }
-        setScreenText(screens[1], `${sentence.subject.english}${subjectHint}`)
+        setScreenText(screens.children[1], `${sentence.subject.english}${subjectHint}`)
         
         let tenseHints = []
         if(sentence.negativeForm)
@@ -140,21 +148,21 @@ function init() {
         let tenseHint = ""
         if(tenseHints.length)
             tenseHint = `, ${tenseHints.join(" ")}`
-        setScreenText(screens[2], `${sentence.tense.english}${tenseHint}`)
-    }    
+        setScreenText(screens.children[2], `${sentence.tense.english}${tenseHint}`)
+    }
 
     function gameLoop(delta){
 
     }
 
     function updateText() {
-        screens.forEach(screen => setScreenText(screen, "Boo!"))
-    }
-
-    function setScreenText(screen, text) {
-        let mainText = screen.children[1]
-        mainText.text = text
-        mainText.x = screenWidth / 2 - (mainText.width / 2)
+        if(sentence) {
+            setScreenText(screens.children[3], `${_.capitalize(sentence.translation)}`)
+            sentence = null
+        } else {
+            setScreenText(screens.children[3], "")
+            askAQuestion()
+        }
     }
 
     function createFloorSprite() {
@@ -171,6 +179,7 @@ function init() {
 
     const nextButtonWidth = 150
     const nextButtonHeight = 50
+    
     function createNextButton() {
         let rectangle = new Graphics();
         rectangle.beginFill(0xfca103)
@@ -178,7 +187,7 @@ function init() {
         rectangle.drawRoundedRect(0, 0, nextButtonWidth, nextButtonHeight, 5)
         rectangle.endFill()
 
-        let buttonText = new Text("Next", primaryTextStyle);
+        let buttonText = new Text("Next", screenMainTextStyle);        
         buttonText.x = nextButtonWidth / 2 - (buttonText.width / 2)
         buttonText.y = nextButtonHeight / 2 - (buttonText.height / 2) - 3
 
@@ -227,63 +236,91 @@ function init() {
         updateText()
     }
 
-    let screenWidth = 225
-    let screenHeight = 100
-    function createScreenSprite(screenConfig) {
+    const smallScreenWidth = 325
+    const largeScreenWidth = 500
+    const smallScreenHeight = 100
+    const baseMargin = 14
+    function createScreenSprite(width, height, includeSubText, invertColours) {
         let rectangle = new Graphics();
-        rectangle.beginFill(0x00)
-        rectangle.lineStyle(6, 0x242424, 1)
-        rectangle.drawRoundedRect(0, 0, screenWidth, screenHeight, 5)
+        let backgroundColor = 0x00
+        if(invertColours)
+            backgroundColor = 0xcfcfcf
+        rectangle.beginFill(backgroundColor)
+        rectangle.lineStyle(4, 0x242424, 1)
+        rectangle.drawRoundedRect(0, 0, width, height, 5)
         rectangle.endFill()
 
-        let mainText = new Text(screenConfig.mainText, primaryTextStyle);
+        let mainTextStyle = screenMainTextStyle
+        if(invertColours)
+            mainTextStyle = answerTextStyle
+        let mainText = new Text("", mainTextStyle);        
         mainText.name = "main-text"
-        mainText.x = screenWidth / 2 - (mainText.width / 2)
-        mainText.y = screenHeight / 2 - (mainText.height / 2) - 3
+        mainText.anchor.set(0.5, 0.5)
+        mainText.x = width / 2
+        mainText.y = height / 2
         
-        let subtitleText = new Text(screenConfig.subText, subtitleTextStyle);
-        subtitleText.name = "sub-text"
-        subtitleText.x = screenWidth / 2 - (subtitleText.width / 2)
-        subtitleText.y = screenHeight / 2 + (mainText.height / 2) + 1
-
         let screen = new PIXI.Container();
 
         screen.addChild(rectangle)
         screen.addChild(mainText)
-        screen.addChild(subtitleText)
 
-        screen.position.set(screenConfig.x, screenConfig.y)
+        if(includeSubText) {
+            let subtitleText = new Text("", screenSubtitleTextStyle);
+            subtitleText.name = "sub-text"
+            subtitleText.anchor.set(0.5, 0.5)
+            subtitleText.x = smallScreenWidth / 2
+
+            subtitleText.y = smallScreenHeight / 2 + (mainText.height / 2) + 15
+            
+            screen.addChild(subtitleText)
+        }
+
+        //screen.position.set(screenConfig.x, screenConfig.y)
 
         return screen
     }
 
-    function getVerbSubjectSentenceScreenConfig() {
-        let screenConfigs = []
-        screenConfigs.push({
-            name: "verb",
-            x: app.renderer.width / (2 * resolutionFactor) - (0.5 * screenWidth),
-            y: app.renderer.height / (2 * resolutionFactor) - (1.8 * screenHeight),
-            mainText: "---",
-            subText: "Verb"
-        })
+    function setScreenText(screen, text) {
+        let mainText = screen.children[1]
+        mainText.text = text
+        //mainText.x = (screen.width / 2) - (mainText.width / 2)
+    }
 
-        screenConfigs.push({
-            name: "subject",
-            x: app.renderer.width / (2 * resolutionFactor) - (0.5 * screenWidth),
-            y: app.renderer.height / (2 * resolutionFactor) - (0.5 * screenHeight),
-            mainText: "---",
-            subText: "Subject"
-        })
+    function setScreenSubText(screen, subtext) {
+        let subtextText = screen.children[2]
+        subtextText.text = subtext
+        //subtextText.x = screen.width / 2 - (subtextText.width / 2)
+    }
 
-        screenConfigs.push({
-            name: "tense",
-            x: app.renderer.width / (2 * resolutionFactor) - (0.5 * screenWidth),
-            y: app.renderer.height / (2 * resolutionFactor) + (0.8 * screenHeight),
-            mainText: "---",
-            subText: "Tense"
-        })
+    function createVerbSubjectSentenceScreenArea() {
+        let screenArea = new PIXI.Container();        
 
-        return screenConfigs
+        let verbScreen = createScreenSprite(smallScreenWidth, smallScreenHeight, true)
+        verbScreen.x = (largeScreenWidth - smallScreenWidth) / 2
+        verbScreen.name = "verb"
+        setScreenSubText(verbScreen, "Verb")
+        screenArea.addChild(verbScreen)
+
+        let subjectScreen = createScreenSprite(smallScreenWidth, smallScreenHeight, true)
+        subjectScreen.name = "verb"
+        subjectScreen.x = (largeScreenWidth - smallScreenWidth) / 2
+        setScreenSubText(subjectScreen, "Subject")
+        subjectScreen.y = smallScreenHeight + baseMargin
+        screenArea.addChild(subjectScreen)
+
+        let tenseScreen = createScreenSprite(smallScreenWidth, smallScreenHeight, true)
+        tenseScreen.name = "tense"
+        tenseScreen.x = (largeScreenWidth - smallScreenWidth) / 2
+        setScreenSubText(tenseScreen, "Tense")
+        tenseScreen.y = 2 * (smallScreenHeight + baseMargin)
+        screenArea.addChild(tenseScreen)
+
+        let answerScreen = createScreenSprite(largeScreenWidth, smallScreenHeight, false, true)
+        answerScreen.name = "answer"        
+        answerScreen.y = 3 * (smallScreenHeight + baseMargin)
+        screenArea.addChild(answerScreen)
+
+        return screenArea
     }
 
     start()

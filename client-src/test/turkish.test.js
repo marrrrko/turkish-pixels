@@ -53,7 +53,7 @@ test('appendSuffixToWord', async function(t) {
 })
 
 test("conjugateVerb", async function(t) {
-    let wordDatabase = await vocabulary.loadWordDatabase()
+    let wordDatabase = await vocabulary.loadWordDatabaseFromFile()
     
     let presentContinuous = wordDatabase.getVerbTenseByEnglishName("present continuous")
 
