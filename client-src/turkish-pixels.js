@@ -19,17 +19,13 @@ function init() {
     let gameContext = undefined
 
     function createLaunchScreen() {
-        let goButtons = document.querySelectorAll(".go-button")
-        goButtons.forEach(function(el) {
-            el.addEventListener("click", (e) => {
-                goButtons.forEach(function(el2) {
-                    el2.style.display = "none"
-                })
-                
-                if(el.id == "go-fs")
-                    requestFullScreen()
-                setTimeout(createApp, 200)
-            })
+        let goButton = document.getElementById("go")
+        goButton.addEventListener("click", (e) => {
+            document.getElementById("startup").style.display = "none"
+            let useFullScreen = document.getElementById("fullscreen-option").checked            
+            if(useFullScreen)
+                requestFullScreen()
+            setTimeout(createApp, 200)
         })
     }
 

@@ -4,7 +4,7 @@
   "description": "A web game for learning Turkish",
   "main": "",
   "scripts": {
-    "develop": "webpack --mode development --watch",
+    "develop": "node webserver.js & webpack --mode development --watch",
     "build": "webpack --mode production"
   },
   "author": "Mark Carrier",

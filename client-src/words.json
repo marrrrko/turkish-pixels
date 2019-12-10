@@ -18,6 +18,24 @@
         "turkish": "kitap"
     },
     {
+        "id":"51da8b85-d35f-4922-ab8d-8e6651dc3754",
+        "type": "common noun",
+        "english": "car",
+        "turkish": "araba"
+    },
+    {
+        "id":"b2e3ae6e-83d5-4d3c-91d3-a2734806cece",
+        "type": "common noun",
+        "english": "spouse",
+        "turkish": "eş"
+    },
+    {
+        "id":"7edc9c04-31a8-4102-99f6-a775d8de0c99",
+        "type": "common noun",
+        "english": "mother",
+        "turkish": "anne"
+    },
+    {
         "id": "a9715cf9-b311-4b7c-bfcf-a87c7c4aac95",
         "type": "verb",
         "english": "to go",

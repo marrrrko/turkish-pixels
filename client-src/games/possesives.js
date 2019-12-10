@@ -14,27 +14,20 @@ function createGame(gameContext) {
 
     let verbScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
     verbScreen.x = (largeScreenWidth - smallScreenWidth) / 2
-    verbScreen.name = "verb"
-    screensTool.setScreenSubText(verbScreen, "Verb")
+    verbScreen.name = "Noun"
+    screensTool.setScreenSubText(verbScreen, "Noun")
     screenArea.addChild(verbScreen)
 
     let subjectScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
-    subjectScreen.name = "verb"
+    subjectScreen.name = "Owner"
     subjectScreen.x = (largeScreenWidth - smallScreenWidth) / 2
-    screensTool.setScreenSubText(subjectScreen, "Subject")
+    screensTool.setScreenSubText(subjectScreen, "Owner")
     subjectScreen.y = smallScreenHeight + baseMargin
     screenArea.addChild(subjectScreen)
 
-    let tenseScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
-    tenseScreen.name = "tense"
-    tenseScreen.x = (largeScreenWidth - smallScreenWidth) / 2
-    screensTool.setScreenSubText(tenseScreen, "Tense")
-    tenseScreen.y = 2 * (smallScreenHeight + baseMargin)
-    screenArea.addChild(tenseScreen)
-
     let answerScreen = screensTool.createScreenSprite(largeScreenWidth, smallScreenHeight, false, true)
     answerScreen.name = "answer"        
-    answerScreen.y = 3 * (smallScreenHeight + baseMargin)
+    answerScreen.y = 2 * (smallScreenHeight + baseMargin)
     screenArea.addChild(answerScreen)
 
     let buttonArea = createButtonArea(gameContext)
