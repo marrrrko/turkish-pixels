@@ -1,6 +1,7 @@
 const PIXI = require('pixi.js')
 const vocabulary = require('./vocabulary')
 const subjectVerbGame = require('./games/subject-verb')
+const possesiveGame = require('./games/possesives')
 
 function docReady(fn) {
     if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -72,7 +73,8 @@ function init() {
         app.stage.addChild(createFloorSprite())
     
         let wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
-        gameContext = subjectVerbGame.createGame({ wordDatabase })
+        //gameContext = subjectVerbGame.createGame({ wordDatabase })
+        gameContext = possesiveGame.createGame({ wordDatabase })
         gameContext.gameAreaContainer.x = app.renderer.width / (2 * resolutionFactor) - (gameContext.gameAreaContainer.width / 2)
         gameContext.gameAreaContainer.y = app.renderer.height / (2 * resolutionFactor) - (gameContext.gameAreaContainer.height / 2)
         app.stage.addChild(gameContext.gameAreaContainer)

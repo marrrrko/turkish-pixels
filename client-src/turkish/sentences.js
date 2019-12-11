@@ -42,7 +42,27 @@ function buildVerbSubjectSentence(wordDatabase, allowedTenses, negativeFormAllow
     return sentence
 }
 
+function buildPossesiveNoun(wordDatabase) {
+    let possesive = {}
+    possesive.noun = _.sample(wordDatabase.commonNouns)
+    possesive.owner = _.sample(wordDatabase.pronouns)
+
+    let possesivePronoun = wordTools.getPossesivePronoun(
+        possesive.owner.person,
+        possesive.owner.isPlural)
+
+    let possesiveNoun = wordTools.makePossesive(
+        possesive.noun.turkish,
+        possesive.owner.person,
+        possesive.owner.isPlural)
+
+    possesive.translation = `${possesivePronoun} ${possesiveNoun}`
+
+    return possesive
+}
+
 module.exports = {
     buildVerbSubjectSentence,
-    buildVerbSubjectObjectSentence
+    buildVerbSubjectObjectSentence,
+    buildPossesiveNoun
 }

@@ -49,39 +49,20 @@ function createButtonArea(gameContext) {
 }
 
 function advanceGame(gameContext) {
-    if(gameContext.sentence) {
-        screensTool.setScreenText(gameContext.gameAreaContainer.children[3], `${_.capitalize(gameContext.sentence.translation)}`)
-        gameContext.sentence = null
+    if(gameContext.possesive) {
+        screensTool.setScreenText(gameContext.gameAreaContainer.children[2], `${_.capitalize(gameContext.possesive.translation)}`)
+        gameContext.possesive = null
     } else {
-        gameContext.sentence = sentences.buildVerbSubjectSentence(
-            gameContext.wordDatabase,
-            gameContext.wordDatabase.verbTenses.filter(t => t.english == "present continuous"),
-            _.random(0,1),
-            _.random(0,1))
-        screensTool.setScreenText(gameContext.gameAreaContainer.children[3], "")
+        gameContext.possesive = sentences.buildPossesiveNoun(
+            gameContext.wordDatabase)
+        screensTool.setScreenText(gameContext.gameAreaContainer.children[2], "")
         gameContext = displayQuestion(gameContext)
     }
 }
 
 function displayQuestion(gameContext) {
-    screensTool.setScreenText(gameContext.gameAreaContainer.children[0], `${gameContext.sentence.verb.english}`)
-    
-    let subjectHint = ""
-    if(gameContext.sentence.subject.person == 2) {
-        subjectHint = gameContext.sentence.subject.isPlural ? " (plural)" : " (singular)"
-    }
-    screensTool.setScreenText(gameContext.gameAreaContainer.children[1], `${gameContext.sentence.subject.english}${subjectHint}`)
-    
-    let tenseHints = []
-    if(gameContext.sentence.negativeForm)
-        tenseHints.push("negative")
-    if(gameContext.sentence.questionForm)
-        tenseHints.push("question")
-    
-    let tenseHint = ""
-    if(tenseHints.length)
-        tenseHint = `, ${tenseHints.join(" ")}`
-    screensTool.setScreenText(gameContext.gameAreaContainer.children[2], `${gameContext.sentence.tense.english}${tenseHint}`)
+    screensTool.setScreenText(gameContext.gameAreaContainer.children[0], gameContext.possesive.owner.english)   
+    screensTool.setScreenText(gameContext.gameAreaContainer.children[1], gameContext.possesive.noun.english)
 
     return gameContext
 }

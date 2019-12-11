@@ -83,6 +83,8 @@ function softenNoun(word) {
 }
 
 function makePossesive(noun, person, isPlural) {
+    if(!noun)
+        throw new Error("Need a noun!")
     noun = noun.trim()
     let wordEndsInVowel = letterTools.wordEndsWithLetterFromGroup(noun, letterTools.LETTER_GROUPS.VOWELS)
     let nextVowel = getHarmonizedVowel4(noun)
@@ -138,6 +140,32 @@ function makePossesive(noun, person, isPlural) {
     }
 }
 
+function getPossesivePronoun(person, isPlural) {
+    if(!isPlural) {
+        switch(person) {
+            case 1:
+                return `benim`
+            case 2:
+                return `senin`
+            case 3:
+                return `onun`
+            default:
+                throw new Error("Impossible person")
+        }
+    } else {
+        switch(person) {
+            case 1:
+                return `bizim`
+            case 2:
+                return `sizin`
+            case 3:
+                return `onların`
+            default:
+                throw new Error("Impossible person")
+        }
+    }
+}
+
 function getVerbRoot(infinitiveVerb) {
     let suffix = infinitiveVerb.trim().toLowerCase().slice(-3)
     if(suffix != "mek" && suffix != "mak") {
@@ -188,6 +216,7 @@ module.exports = {
     getVerbRoot,
     conjugateVerb,
     makePossesive,
+    getPossesivePronoun,
     softenVerb,
     softenNoun
 }
