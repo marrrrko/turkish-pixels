@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const letterTools = require('./letter-tools')
 
-function harmonize2(word) {
+function getHarmonizedVowel2(word) {
     let lastVowel = letterTools.getLastVowel(word).toLowerCase()
     if(letterTools.charIsInLetterGroup(lastVowel, letterTools.LETTER_GROUPS.THICK_VOWELS)) {
         return "a"
@@ -12,7 +12,7 @@ function harmonize2(word) {
     }
 }
 
-function harmonize4(word) {
+function getHarmonizedVowel4(word) {
     let lastVowel = letterTools.getLastVowel(word).toLowerCase()
     if(lastVowel == "a" || lastVowel == "ı") {
         return "ı"
@@ -29,7 +29,7 @@ function harmonize4(word) {
 
 function appendSuffixToWord(word, suffixPattern) {
     let suffixes = []
-    let prefix = softenIfNeeded(word, suffixPattern)
+    let prefix = softenVerb(word, suffixPattern)
 
     if(suffixPattern.startsWith("_yor")) {
         let wordEndsInVowel = letterTools.wordEndsWithLetterFromGroup(prefix, letterTools.LETTER_GROUPS.VOWELS)
@@ -37,14 +37,14 @@ function appendSuffixToWord(word, suffixPattern) {
             prefix = prefix.trim().slice(0,-1)
         } 
 
-        let harmonizedVowel = harmonize4(word)
+        let harmonizedVowel = getHarmonizedVowel4(word)
         suffixes.push(suffixPattern.replace("_", harmonizedVowel))
         
     } else if (suffixPattern == "l_r") {
-        let harmonizedVowel = harmonize2(word)
+        let harmonizedVowel = getHarmonizedVowel2(word)
         suffixes.push(suffixPattern.replace("_", harmonizedVowel))
     } else {
-        let harmonizedVowel = harmonize4(word)
+        let harmonizedVowel = getHarmonizedVowel4(word)
         suffixes.push(suffixPattern.replace("_", harmonizedVowel))
     }
 
@@ -52,7 +52,7 @@ function appendSuffixToWord(word, suffixPattern) {
 }
 
 const softeningExceptions = ["git", "tat", "dit", "et", "güt"]
-function softenIfNeeded(word, suffixPattern) {
+function softenVerb(word, suffixPattern) {
     let softenedWord = word
 
     let qualifiesForSoftening = softeningExceptions.includes(word.toLowerCase().trim())
@@ -67,8 +67,75 @@ function softenIfNeeded(word, suffixPattern) {
     return softenedWord
 }
 
+function softenNoun(word) {
+    let needsSoftenning = letterTools.wordEndsWithLetterFromGroup(
+        word,
+        letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS)
+
+    if(needsSoftenning) {
+        let lastLetter = letterTools.getLastLetter(word)
+        let hardConsonentIndex = letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS.indexOf(lastLetter)
+        let softenedConsonent = letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS_VOWEL_MATCHES[hardConsonentIndex]
+        return word.trim().slice(0,-1) + softenedConsonent
+    } else {
+        return word
+    }
+}
+
 function makePossesive(noun, person, isPlural) {
-    
+    noun = noun.trim()
+    let wordEndsInVowel = letterTools.wordEndsWithLetterFromGroup(noun, letterTools.LETTER_GROUPS.VOWELS)
+    let nextVowel = getHarmonizedVowel4(noun)
+    if(wordEndsInVowel) {
+        if(!isPlural) {
+            switch(person) {
+                case 1:
+                    return `${noun}m`
+                case 2:
+                    return `${noun}n`
+                case 3:
+                    return `${noun}s${nextVowel}`
+                default:
+                    throw new Error("Impossible person")
+            }
+        } else {
+            switch(person) {
+                case 1:
+                    return `${noun}m${nextVowel}z`
+                case 2:
+                    return `${noun}n${nextVowel}z`
+                case 3:
+                    return `${noun}s${nextVowel}`
+                default:
+                    throw new Error("Impossible person")
+            }
+        }
+    } else {
+        let softenedNoun = softenNoun(noun)
+        if(!isPlural) {
+            switch(person) {
+                case 1:
+                    return `${softenedNoun}${nextVowel}m`
+                case 2:
+                    return `${softenedNoun}${nextVowel}n`
+                case 3:
+                    return `${softenedNoun}${nextVowel}`
+                default:
+                    throw new Error("Impossible person")
+            }
+        } else {
+            switch(person) {
+                case 1:
+                    return `${softenedNoun}${nextVowel}m${nextVowel}z`
+                case 2:
+                    return `${softenedNoun}${nextVowel}n${nextVowel}z`
+                case 3:
+                    return `${softenedNoun}${nextVowel}`
+                default:
+                    throw new Error("Impossible person")
+            }
+        }
+    }
 }
 
 function getVerbRoot(infinitiveVerb) {
@@ -115,9 +182,12 @@ function conjugatePresentContinuousVerb(verb, person, isPlural, negativeForm, qu
 }
 
 module.exports = {
-    harmonize4,
-    harmonize2,
+    getHarmonizedVowel4,
+    getHarmonizedVowel2,
     appendSuffixToWord,
     getVerbRoot,
-    conjugateVerb
+    conjugateVerb,
+    makePossesive,
+    softenVerb,
+    softenNoun
 }

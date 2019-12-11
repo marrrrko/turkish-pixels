@@ -1,6 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const exec = require('child_process').exec;
+
+
 module.exports = {
     mode: "development",
     entry: './client-src/turkish-pixels.js',
@@ -15,6 +18,16 @@ module.exports = {
         new CopyWebpackPlugin([
             {from:'client-src/assets',to:'assets'} 
         ]),
+        {
+            apply: (compiler) => {
+              compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
+                exec('node client-src/test/turkish.test.js', (err, stdout, stderr) => {
+                  if (stdout) process.stdout.write(stdout);
+                  if (stderr) process.stderr.write(stderr);
+                });
+              });
+            }
+          }
     ],
     module: {
         rules: [
