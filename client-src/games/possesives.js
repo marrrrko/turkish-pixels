@@ -14,14 +14,14 @@ function createGame(gameContext) {
 
     let verbScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
     verbScreen.x = (largeScreenWidth - smallScreenWidth) / 2
-    verbScreen.name = "Noun"
-    screensTool.setScreenSubText(verbScreen, "Noun")
+    verbScreen.name = "Owner"
+    screensTool.setScreenSubText(verbScreen, "Owner")
     screenArea.addChild(verbScreen)
 
     let subjectScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
-    subjectScreen.name = "Owner"
+    subjectScreen.name = "Object"
     subjectScreen.x = (largeScreenWidth - smallScreenWidth) / 2
-    screensTool.setScreenSubText(subjectScreen, "Owner")
+    screensTool.setScreenSubText(subjectScreen, "Object")
     subjectScreen.y = smallScreenHeight + baseMargin
     screenArea.addChild(subjectScreen)
 
@@ -61,7 +61,16 @@ function advanceGame(gameContext) {
 }
 
 function displayQuestion(gameContext) {
-    screensTool.setScreenText(gameContext.gameAreaContainer.children[0], gameContext.possesive.owner.english)   
+    let ownerHint = ""
+    let ownerLabel = gameContext.possesive.owner.english
+    if(gameContext.possesive.owner.alternateEnglish && gameContext.possesive.owner.alternateEnglish.length) {
+        ownerLabel = [ownerLabel].concat(gameContext.possesive.owner.alternateEnglish).join("/")
+    }
+
+    if(gameContext.possesive.owner.person == 2) {
+        ownerHint = gameContext.possesive.owner.isPlural ? " (plural)" : " (singular)"
+    }
+    screensTool.setScreenText(gameContext.gameAreaContainer.children[0], `${ownerLabel}${ownerHint}`)   
     screensTool.setScreenText(gameContext.gameAreaContainer.children[1], gameContext.possesive.noun.english)
 
     return gameContext

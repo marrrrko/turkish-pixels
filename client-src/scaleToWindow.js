@@ -75,3 +75,5 @@ function scaleToWindow(canvas, backgroundColor) {
   //for correct hit testing between the pointer and sprites
   return scale;
 }
+
+module.exports = scaleToWindow

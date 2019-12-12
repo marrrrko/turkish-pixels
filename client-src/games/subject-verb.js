@@ -72,12 +72,15 @@ function advanceGame(gameContext) {
 
 function displayQuestion(gameContext) {
     screensTool.setScreenText(gameContext.gameAreaContainer.children[0], `${gameContext.sentence.verb.english}`)
-    
+    let subjectLabel = gameContext.sentence.subject.english
+    if(gameContext.sentence.subject.alternateEnglish && gameContext.sentence.subject.alternateEnglish.length) {
+        subjectLabel = _.sample([subjectLabel].concat(gameContext.sentence.subject.alternateEnglish))
+    }
     let subjectHint = ""
     if(gameContext.sentence.subject.person == 2) {
         subjectHint = gameContext.sentence.subject.isPlural ? " (plural)" : " (singular)"
     }
-    screensTool.setScreenText(gameContext.gameAreaContainer.children[1], `${gameContext.sentence.subject.english}${subjectHint}`)
+    screensTool.setScreenText(gameContext.gameAreaContainer.children[1], `${subjectLabel}${subjectHint}`)
     
     let tenseHints = []
     if(gameContext.sentence.negativeForm)
