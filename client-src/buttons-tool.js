@@ -9,7 +9,7 @@ function createButton(buttonWidth, label, clickHandler, backgroundColor = 0xfca1
     rectangle.drawRoundedRect(0, 0, buttonWidth, buttonHeight, 5)
     rectangle.endFill()
 
-    textStyle = new PIXI.TextStyle({
+    const textStyle = new PIXI.TextStyle({
         fontFamily: fontStyles.buttonTextStyle.fontFamily,
         fontSize: fontStyles.buttonTextStyle.fontSize,
         fill: fontStyles.buttonTextStyle.fill
@@ -17,13 +17,13 @@ function createButton(buttonWidth, label, clickHandler, backgroundColor = 0xfca1
 
     let buttonText = new PIXI.Text(label, textStyle);
         
-    while(buttonText.width + 10 > rectangle.width) {
+    while(buttonText.width + 15 > rectangle.width) {
         textStyle.fontSize = textStyle.fontSize - 2
         buttonText = new PIXI.Text(label, textStyle);
     }
 
     buttonText.x = buttonWidth / 2 - (buttonText.width / 2)
-    buttonText.y = buttonHeight / 2 - (buttonText.height / 2) - 3
+    buttonText.y = buttonHeight / 2 - (buttonText.height / 2)
 
     let button = new PIXI.Container();
 

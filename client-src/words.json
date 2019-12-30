@@ -183,5 +183,68 @@
         "turkish": "onlar",
         "person": 3,
         "isPlural": true
+    },
+    {
+        "id": "af7c47e3-ccd8-40e5-9069-a54f171f9821",
+        "type": "pronoun",
+        "subtype": "possessive",
+        "english": "my",
+        "turkish": "benim",
+        "person": 1,
+        "isPlural": false
+    },
+    {
+        "id": "3dd20f18-8a5e-412c-b8f6-e61378f70b42",
+        "type": "pronoun",
+        "subtype": "possessive",
+        "english": "your",
+        "turkish": "senin",
+        "person": 2,
+        "isPlural": false
+    },
+    {
+        "id": "0753904a-6ce2-429c-9cfa-295483b181f7",
+        "type": "pronoun",
+        "subtype": "possessive",
+        "english": "her",
+        "turkish": "onun",
+        "person": 3,
+        "isPlural": false
+    },
+    {
+        "id": "81ee7b46-9ad9-4f60-ba4c-6c6b85a641f2",
+        "type": "pronoun",
+        "subtype": "possessive",
+        "english": "his",
+        "turkish": "onun",
+        "person": 3,
+        "isPlural": false
+    },
+    {
+        "id": "7bf411ce-63c2-4067-a735-bd4fa0a6d699",
+        "type": "pronoun",
+        "subtype": "possessive",
+        "english": "our",
+        "turkish": "bizim",
+        "person": 1,
+        "isPlural": true
+    },
+    {
+        "id": "c34dfcd7-c2d5-411b-a9a4-d27dcb2e6c2b",
+        "type": "pronoun",
+        "subtype": "possessive",
+        "english": "your",
+        "turkish": "sizin",
+        "person": 2,
+        "isPlural": true
+    },
+    {
+        "id": "8cc75d82-f5ff-4d68-ba39-c94256285401",
+        "type": "pronoun",
+        "subtype": "possessive",
+        "english": "their",
+        "turkish": "onların",
+        "person": 3,
+        "isPlural": true
     }
 ]

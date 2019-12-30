@@ -92,12 +92,10 @@ function init() {
     async function setTheStage() {           
         appContext.wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
 
-        appContext.menu = createGameMenuContainer()
-        appContext.menu.visible = true
+        appContext.menu = createGameMenuContainer()        
         appContext.app.stage.addChild(appContext.menu)
 
         appContext.topBar = createTopBarContainer()
-        appContext.topBar.visible = true
         appContext.app.stage.addChild(appContext.topBar)
 
         appContext.app.renderer.render(appContext.app.stage)
@@ -117,7 +115,7 @@ function init() {
         scoreText.x = box.width - (scoreText.width + appContext.baseMargin)
         box.addChild(scoreText)
 
-        const backButton = buttonsTool.createButton(50, "Back", showHome, null, appContext.topBarHeight - (2 * appContext.baseMargin))
+        const backButton = buttonsTool.createButton(60, "< Menu", showHome, null, appContext.topBarHeight - (3 * appContext.baseMargin))
         backButton.x = appContext.baseMargin
         backButton.y = (box.height / 2) - (backButton.height / 2)
         backButton.visible = false
@@ -132,6 +130,7 @@ function init() {
     function showHome() {
         appContext.app.stage.removeChild(appContext.gameHouseContainer)
         appContext.backButton.visible = false
+        appContext.menu.visible = true
     }
     
     function createGameMenuContainer() {
@@ -169,6 +168,7 @@ function init() {
         appContext.app.stage.addChild(appContext.gameHouseContainer)
         appContext.app.stage.addChild(appContext.topBar)
         appContext.backButton.visible = true
+        appContext.menu.visible = false
     }
 
     function createFloorSprite() {

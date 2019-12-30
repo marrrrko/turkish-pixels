@@ -22,7 +22,7 @@ function buildVerbSubjectSentence(wordDatabase, tenseName, negativeFormAllowed, 
 
     translation.englishElements.push({
         label: "Verb",
-        value: verb.turkish
+        value: verb.english
     })
 
     let subjectHint = ""
@@ -32,7 +32,7 @@ function buildVerbSubjectSentence(wordDatabase, tenseName, negativeFormAllowed, 
 
     translation.englishElements.push({
         label: "Subject",
-        value: `${subject.turkish}${subjectHint}`
+        value: `${subject.english}${subjectHint}`
     })
 
     let tenseHints = []
@@ -46,7 +46,7 @@ function buildVerbSubjectSentence(wordDatabase, tenseName, negativeFormAllowed, 
         tenseHint = `, ${tenseHints.join(" ")}`
     translation.englishElements.push({
         label: "Tense",
-        value: `${tense.turkish}${tenseHint}`
+        value: `${tense.english}${tenseHint}`
     })
 
 
@@ -72,7 +72,7 @@ function buildPossesiveNoun(wordDatabase) {
     }
 
     const noun = _.sample(wordDatabase.commonNouns)
-    const owner = _.sample(wordDatabase.pronouns)
+    const owner = _.sample(wordDatabase.pronouns.filter(p => p.subtype && p.subtype === "possessive"))
     const translatedPronoun = wordTools.getPossesivePronoun(
         owner.person,
         owner.isPlural)

@@ -7,7 +7,17 @@ function createCard(width, height, text, subtext) {
     background.drawRoundedRect(0,0, width, height, 2)
     background.endFill()
 
-    const mainText = new PIXI.Text(text, fontStyles.answerTextStyle);
+    const textStyle = new PIXI.TextStyle({
+        fontFamily: fontStyles.answerTextStyle.fontFamily,
+        fontSize: fontStyles.answerTextStyle.fontSize,
+        fill: fontStyles.answerTextStyle.fill
+    });
+
+    let mainText = new PIXI.Text(text, textStyle);
+    while(mainText.width + 10 > background.width) {
+        textStyle.fontSize = textStyle.fontSize - 2
+        mainText = new PIXI.Text(text, textStyle);
+    }
     mainText.anchor.set(0.5, 0.5)
     mainText.x = width / 2
     mainText.y = height / 2
