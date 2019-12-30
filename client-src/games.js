@@ -1,34 +1,27 @@
-const possesives = require('./games/possesives')
-const subjectVerb = require('./games/subject-verb')
+const simpleTranslations = require('./games/simple-translations')
+const translations = require('./turkish/translations')
 
 export default
 [
     {
         "name": "present-continous-simple-subject-verb",
         "label": "Present tense",
-        "creatorFunction": subjectVerb.createGame,
+        "gameCreator": simpleTranslations.createGame,
         "config": {
-            "sentenceCreatorModule": "./turkish/sentences.js",
-            "sentenceCreatorFunction": "buildVerbSubjectSentence"
+            "translationCreator": translations.buildVerbSubjectSentence,
+            "arguments": [
+                "present continuous",
+                true,
+                true
+            ]
         }
     },
     {
-        "name": "simple-possesives",
-        "label": "Possesives",
-        "creatorFunction": possesives.createGame,
+        "name": "Possessives",
+        "label": "Possessives",
+        "gameCreator": simpleTranslations.createGame,
         "config": {
-            "sentenceCreatorModule": "./turkish/sentences.js",
-            "sentenceCreatorFunction": "buildPossesiveNoun"
-        }
-    },
-    {
-        "name": "to-at-from",
-        "label": "To/At/From",
-        "creatorModule": "./games/simple-translations.js",
-        "creatorFunction": "createGame",
-        "config": {
-            "sentenceCreatorModule": "./turkish/sentences.js",
-            "sentenceCreatorFunction": "buildToAtFrom"
+            "translationCreator": translations.buildPossesiveNoun
         }
     }
 ]

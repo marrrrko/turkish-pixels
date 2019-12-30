@@ -24,8 +24,7 @@ function init() {
         pixelWidth: undefined,
         pixelHeight: undefined,
         topBarHeight: 50,
-        baseMargin: 5
-
+        baseMargin: 5        
     }
 
     function createLaunchScreen() {
@@ -78,7 +77,7 @@ function init() {
         
         console.log(`Running at ${window.innerWidth}x${window.innerHeight} (ratio@${appContext.resolutionFactor}) rendered using ${appContext.app.renderer.width}x${appContext.app.renderer.height}`)
         
-        document.body.appendChild(appContext.app.view)
+        document.body.appendChild(appContext.app.view)        
 
         window.addEventListener("resize", function(event){ 
             scaleToWindow(appContext.app.renderer.view);
@@ -90,7 +89,7 @@ function init() {
             .load(setTheStage)
     }
 
-    async function setTheStage() {       
+    async function setTheStage() {           
         appContext.wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
 
         appContext.menu = createGameMenuContainer()
@@ -109,7 +108,7 @@ function init() {
         const topBar = new PIXI.Container()
         const box = new PIXI.Graphics()
         
-        box.beginFill(0x2c2c2c, 0.05)
+        box.beginFill(0xffffff, 0.2)
         box.drawRoundedRect(0, 0, appContext.effectiveWidth, appContext.topBarHeight, 0)
         box.endFill()
 
@@ -118,9 +117,21 @@ function init() {
         scoreText.x = box.width - (scoreText.width + appContext.baseMargin)
         box.addChild(scoreText)
 
+        const backButton = buttonsTool.createButton(50, "Back", showHome, null, appContext.topBarHeight - (2 * appContext.baseMargin))
+        backButton.x = appContext.baseMargin
+        backButton.y = (box.height / 2) - (backButton.height / 2)
+        backButton.visible = false
+        box.addChild(backButton)
+        appContext.backButton = backButton
+
         topBar.addChild(box)
 
         return topBar
+    }
+
+    function showHome() {
+        appContext.app.stage.removeChild(appContext.gameHouseContainer)
+        appContext.backButton.visible = false
     }
     
     function createGameMenuContainer() {
@@ -134,7 +145,7 @@ function init() {
         const buttons = new PIXI.Container()
         gamesList.default.forEach((gameInfo, index) => {
             const handler = function() { runGameHouse(gameInfo) }
-            const button = buttonsTool.createButton(appContext, gameInfo.label, handler)
+            const button = buttonsTool.createButton(appContext.effectiveWidth * 0.8, gameInfo.label, handler)
             const buttonHeight = button.height
             button.y = (buttonHeight + 4) * index
             buttons.addChild(button)
@@ -147,21 +158,22 @@ function init() {
     }
 
     function runGameHouse(gameInfo) {
-        const gameHouseContainer = new PIXI.Container()
-        const gameContext = gameInfo.creatorFunction.call(null, appContext, gameInfo.config)        
-        gameHouseContainer.addChild(createFloorSprite())
+        appContext.gameHouseContainer = new PIXI.Container()
+        const gameArea = gameInfo.gameCreator.call(null, appContext, gameInfo.config)        
+        appContext.gameHouseContainer.addChild(createFloorSprite())
 
-        let gameArea = gameContext.gameAreaContainer
-        gameArea.x = (gameHouseContainer.width / 2) - (gameArea.width / 2)
-        gameHouseContainer.addChild(gameArea)
-
-        appContext.app.stage.addChild(gameHouseContainer)
+        gameArea.x = (appContext.gameHouseContainer.width / 2) - (gameArea.width / 2)        
+        appContext.gameHouseContainer.addChild(gameArea)
+        
+        appContext.app.stage.removeChild(appContext.topBar)
+        appContext.app.stage.addChild(appContext.gameHouseContainer)
+        appContext.app.stage.addChild(appContext.topBar)
+        appContext.backButton.visible = true
     }
 
     function createFloorSprite() {
         let floorTexture = PIXI.loader.resources["assets/LPC_house_interior/interior.png"].texture
-        let floorFrame = new PIXI.Rectangle(0, 96, 32, 32)
-        floorTexture.frame = floorFrame
+        floorTexture.frame = new PIXI.Rectangle(0, 96, 32, 32)
         let floorSprite = new PIXI.Sprite(floorTexture)
 
         floorSprite.x = 100

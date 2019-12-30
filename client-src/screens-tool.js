@@ -1,22 +1,29 @@
 const PIXI = require('pixi.js')
+const fontStyles = require('./font-styles')
 
-const screenMainTextStyle = new PIXI.TextStyle({
-    fontFamily: "Georgia",
-    fontSize: 28,
-    fill: "white"
-    });
+function createCard(width, height, text, subtext) {
+    const background = new PIXI.Graphics()
+    background.beginFill(0xFEFFE4)
+    background.drawRoundedRect(0,0, width, height, 2)
+    background.endFill()
 
-const answerTextStyle = new PIXI.TextStyle({
-    fontFamily: "Georgia",
-    fontSize: 28,
-    fill: "black"
-    });
+    const mainText = new PIXI.Text(text, fontStyles.answerTextStyle);
+    mainText.anchor.set(0.5, 0.5)
+    mainText.x = width / 2
+    mainText.y = height / 2
 
-const screenSubtitleTextStyle = new PIXI.TextStyle({
-    fontFamily: "Courier",
-    fontSize: 20,
-    fill: "red"
-    });
+    const subText = new PIXI.Text(subtext, fontStyles.subTextStyle);
+    subText.anchor.set(0.5, 0.5)
+    subText.x = width / 2
+    subText.y = height - (subText.height + 1) / 2
+
+    const card = new PIXI.Container()
+    card.addChild(background)
+    card.addChild(mainText)
+    card.addChild(subText)
+
+    return card
+}
 
 function createScreenSprite(width, height, includeSubText, invertColours) {
     let rectangle = new PIXI.Graphics();
@@ -28,10 +35,10 @@ function createScreenSprite(width, height, includeSubText, invertColours) {
     rectangle.drawRoundedRect(0, 0, width, height, 5)
     rectangle.endFill()
 
-    let mainTextStyle = screenMainTextStyle
+    let mainTextStyle = fontStyles.screenMainTextStyle
     if(invertColours)
-        mainTextStyle = answerTextStyle
-    let mainText = new PIXI.Text("", mainTextStyle);        
+        mainTextStyle = fontStyles.answerTextStyle
+    let mainText = new PIXI.Text("", mainTextStyle);     
     mainText.name = "main-text"
     mainText.anchor.set(0.5, 0.5)
     mainText.x = width / 2
@@ -43,7 +50,7 @@ function createScreenSprite(width, height, includeSubText, invertColours) {
     screen.addChild(mainText)
 
     if(includeSubText) {
-        let subtitleText = new PIXI.Text("", screenSubtitleTextStyle);
+        let subtitleText = new PIXI.Text("", fontStyles.screenSubtitleTextStyle);
         subtitleText.name = "sub-text"
         subtitleText.anchor.set(0.5, 0.5)
         subtitleText.x = width / 2
@@ -71,6 +78,7 @@ function setScreenSubText(screen, subtext) {
 }
 
 module.exports = {
+    createCard,
     createScreenSprite,
     setScreenText,
     setScreenSubText
