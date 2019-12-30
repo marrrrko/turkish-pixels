@@ -9,47 +9,49 @@ const largeScreenWidth = 500
 const smallScreenHeight = 100
 const baseMargin = 14
 
-function createGame(gameContext) {
+function createGame(appContext, gameConfig) {
     let screenArea = new PIXI.Container();        
 
-    let verbScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
-    verbScreen.x = (largeScreenWidth - smallScreenWidth) / 2
+    let screenWidth = appContext.effectiveWidth * 0.8
+
+    let verbScreen = screensTool.createScreenSprite(screenWidth, smallScreenHeight, true)
+    
     verbScreen.name = "verb"
     screensTool.setScreenSubText(verbScreen, "Verb")
     screenArea.addChild(verbScreen)
 
-    let subjectScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
+    let subjectScreen = screensTool.createScreenSprite(screenWidth, smallScreenHeight, true)
     subjectScreen.name = "verb"
-    subjectScreen.x = (largeScreenWidth - smallScreenWidth) / 2
+
     screensTool.setScreenSubText(subjectScreen, "Subject")
     subjectScreen.y = smallScreenHeight + baseMargin
     screenArea.addChild(subjectScreen)
 
-    let tenseScreen = screensTool.createScreenSprite(smallScreenWidth, smallScreenHeight, true)
+    let tenseScreen = screensTool.createScreenSprite(screenWidth, smallScreenHeight, true)
     tenseScreen.name = "tense"
-    tenseScreen.x = (largeScreenWidth - smallScreenWidth) / 2
+
     screensTool.setScreenSubText(tenseScreen, "Tense")
     tenseScreen.y = 2 * (smallScreenHeight + baseMargin)
     screenArea.addChild(tenseScreen)
 
-    let answerScreen = screensTool.createScreenSprite(largeScreenWidth, smallScreenHeight, false, true)
+    let answerScreen = screensTool.createScreenSprite(screenWidth, smallScreenHeight, false, true)
     answerScreen.name = "answer"        
     answerScreen.y = 3 * (smallScreenHeight + baseMargin)
     screenArea.addChild(answerScreen)
 
-    let buttonArea = createButtonArea(gameContext)
-    buttonArea.x = screenArea.width / 2 - buttonArea.width / 2
+    let buttonArea = createButtonArea(appContext)
+    
     buttonArea.y = answerScreen.y + answerScreen.height + (baseMargin * 2)
     screenArea.addChild(buttonArea)
 
-    gameContext.gameAreaContainer = screenArea
+    appContext.gameAreaContainer = screenArea
 
-    return gameContext
+    return appContext
 }
 
 function createButtonArea(gameContext) {
     let buttonArea = new PIXI.Container();   
-    let nextButton = buttonsTool.createButton("Next", () => advanceGame(gameContext))
+    let nextButton = buttonsTool.createButton(gameContext, "Next", () => advanceGame(gameContext))
     buttonArea.addChild(nextButton)
 
     return buttonArea

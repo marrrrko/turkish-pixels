@@ -1,8 +1,8 @@
 const PIXI = require('pixi.js')
 const vocabulary = require('./vocabulary')
-const subjectVerbGame = require('./games/subject-verb')
-const possesiveGame = require('./games/possesives')
+const gamesList = require('./games.js')
 const scaleToWindow = require('./scaleToWindow')
+const buttonsTool = require('./buttons-tool')
 
 function docReady(fn) {
     if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -16,9 +16,17 @@ docReady(init)
 
 function init() {
 
-    let app = undefined
-    const resolutionFactor = 2
-    let gameContext = undefined
+    const appContext = {
+        app: undefined,
+        resolutionFactor: Math.round(window.devicePixelRatio * 100) / 100,
+        effectiveWidth: undefined,
+        effectiveHeight: undefined,
+        pixelWidth: undefined,
+        pixelHeight: undefined,
+        topBarHeight: 50,
+        baseMargin: 5
+
+    }
 
     function createLaunchScreen() {
         let goButton = document.getElementById("go")
@@ -45,23 +53,35 @@ function init() {
         
     };
 
+    const minWidth = 300
+    const minHeight = 500
     function createApp() {    
-        app = new PIXI.Application({
-            width: 256,
-            height: 256,
+        appContext.app = new PIXI.Application({
+            width: minWidth,
+            height: minHeight,
             antialias: true,
-            resolution: resolutionFactor,
+            resolution: appContext.resolutionFactor,
 
         })
-        app.renderer.view.style.position = "absolute";
-        app.renderer.view.style.display = "block";
-        app.renderer.autoResize = true;
-        app.renderer.resize(window.innerWidth, window.innerHeight);
-        console.log(`Running at ${window.innerWidth}x${window.innerHeight}`)
-        document.body.appendChild(app.view)
+        appContext.app.renderer.view.style.position = "absolute";
+        appContext.app.renderer.view.style.display = "block";
+        appContext.app.renderer.autoResize = true;
+        const adaptedWidth = window.innerWidth > minWidth ? window.innerWidth : minWidth
+        const adaptedHeigh = window.innerHeight > minHeight ? window.innerHeight : minHeight
+        appContext.app.renderer.resize(adaptedWidth, adaptedHeigh);
+        
+        appContext.pixelWidth = appContext.app.renderer.width
+        appContext.pixelHeight = appContext.app.renderer.height
+        
+        appContext.effectiveWidth = appContext.pixelWidth / appContext.resolutionFactor
+        appContext.effectiveHeight = appContext.pixelHeight / appContext.resolutionFactor
+        
+        console.log(`Running at ${window.innerWidth}x${window.innerHeight} (ratio@${appContext.resolutionFactor}) rendered using ${appContext.app.renderer.width}x${appContext.app.renderer.height}`)
+        
+        document.body.appendChild(appContext.app.view)
 
         window.addEventListener("resize", function(event){ 
-            scaleToWindow(app.renderer.view);
+            scaleToWindow(appContext.app.renderer.view);
             //app.renderer.resize(window.innerWidth, window.innerHeight);
         });
 
@@ -70,18 +90,72 @@ function init() {
             .load(setTheStage)
     }
 
-    async function setTheStage() {    
-        app.stage.addChild(createFloorSprite())
-    
-        let wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
-        gameContext = subjectVerbGame.createGame({ wordDatabase })
-        //gameContext = possesiveGame.createGame({ wordDatabase })
-        gameContext.gameAreaContainer.x = app.renderer.width / (2 * resolutionFactor) - (gameContext.gameAreaContainer.width / 2)
-        gameContext.gameAreaContainer.y = app.renderer.height / (2 * resolutionFactor) - (gameContext.gameAreaContainer.height / 2)
-        app.stage.addChild(gameContext.gameAreaContainer)
+    async function setTheStage() {       
+        appContext.wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
 
-        app.renderer.render(app.stage)
-        app.ticker.add(delta => gameLoop(delta))
+        appContext.menu = createGameMenuContainer()
+        appContext.menu.visible = true
+        appContext.app.stage.addChild(appContext.menu)
+
+        appContext.topBar = createTopBarContainer()
+        appContext.topBar.visible = true
+        appContext.app.stage.addChild(appContext.topBar)
+
+        appContext.app.renderer.render(appContext.app.stage)
+        appContext.app.ticker.add(delta => gameLoop(delta))
+    }
+
+    function createTopBarContainer() {
+        const topBar = new PIXI.Container()
+        const box = new PIXI.Graphics()
+        
+        box.beginFill(0x2c2c2c, 0.05)
+        box.drawRoundedRect(0, 0, appContext.effectiveWidth, appContext.topBarHeight, 0)
+        box.endFill()
+
+        const scoreText = new PIXI.Text("Score: 0")
+        scoreText.y = (box.height / 2) - (scoreText.height / 2)
+        scoreText.x = box.width - (scoreText.width + appContext.baseMargin)
+        box.addChild(scoreText)
+
+        topBar.addChild(box)
+
+        return topBar
+    }
+    
+    function createGameMenuContainer() {
+        const menuContainer = new PIXI.Container()
+        const background = new PIXI.Graphics();
+        background.beginFill(0xFFFFFF)
+        background.drawRect(0, 0, appContext.effectiveWidth, appContext.effectiveHeight)
+        background.endFill()
+        menuContainer.addChild(background)
+
+        const buttons = new PIXI.Container()
+        gamesList.default.forEach((gameInfo, index) => {
+            const handler = function() { runGameHouse(gameInfo) }
+            const button = buttonsTool.createButton(appContext, gameInfo.label, handler)
+            const buttonHeight = button.height
+            button.y = (buttonHeight + 4) * index
+            buttons.addChild(button)
+        })
+
+        menuContainer.addChild(buttons)
+        buttons.y = appContext.topBarHeight + (appContext.baseMargin * 2)
+        buttons.x = (appContext.effectiveWidth / 2) - (buttons.width / 2)
+        return menuContainer
+    }
+
+    function runGameHouse(gameInfo) {
+        const gameHouseContainer = new PIXI.Container()
+        const gameContext = gameInfo.creatorFunction.call(null, appContext, gameInfo.config)        
+        gameHouseContainer.addChild(createFloorSprite())
+
+        let gameArea = gameContext.gameAreaContainer
+        gameArea.x = (gameHouseContainer.width / 2) - (gameArea.width / 2)
+        gameHouseContainer.addChild(gameArea)
+
+        appContext.app.stage.addChild(gameHouseContainer)
     }
 
     function createFloorSprite() {
@@ -93,7 +167,7 @@ function init() {
         floorSprite.x = 100
         floorSprite.y = 100
 
-        return new PIXI.extras.TilingSprite(floorTexture, app.renderer.width, app.renderer.height);
+        return new PIXI.extras.TilingSprite(floorTexture, appContext.effectiveWidth, appContext.effectiveHeight);
     }
 
     function gameLoop(delta){

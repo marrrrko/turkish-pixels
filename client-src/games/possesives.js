@@ -42,7 +42,7 @@ function createGame(gameContext) {
 
 function createButtonArea(gameContext) {
     let buttonArea = new PIXI.Container();   
-    let nextButton = buttonsTool.createButton("Next", () => advanceGame(gameContext))
+    let nextButton = buttonsTool.createButton(gameContext, "Next", () => advanceGame(gameContext))
     buttonArea.addChild(nextButton)
 
     return buttonArea

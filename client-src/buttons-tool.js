@@ -1,5 +1,5 @@
 const PIXI = require('pixi.js')
-const defaultButtonWidth = 150
+//const defaultButtonWidth = 150
 const defaultButtonHeight = 50
 
 const buttonTextStyle = new PIXI.TextStyle({
@@ -8,15 +8,17 @@ const buttonTextStyle = new PIXI.TextStyle({
     fill: "white"
     });
 
-function createButton(label, clickHandler) {
-    let rectangle = new PIXI.Graphics();
+function createButton(appContext, label, clickHandler) {
+    const rectangle = new PIXI.Graphics()    
+    const buttonWidth = appContext.effectiveWidth * 0.8
+
     rectangle.beginFill(0xfca103)
     rectangle.lineStyle(2, 0xd4d4d4, 1)
-    rectangle.drawRoundedRect(0, 0, defaultButtonWidth, defaultButtonHeight, 5)
+    rectangle.drawRoundedRect(0, 0, buttonWidth, defaultButtonHeight, 5)
     rectangle.endFill()
 
     let buttonText = new PIXI.Text(label, buttonTextStyle);        
-    buttonText.x = defaultButtonWidth / 2 - (buttonText.width / 2)
+    buttonText.x = buttonWidth / 2 - (buttonText.width / 2)
     buttonText.y = defaultButtonHeight / 2 - (buttonText.height / 2) - 3
 
     let button = new PIXI.Container();
@@ -30,9 +32,12 @@ function createButton(label, clickHandler) {
     button.interactive = true;
     button.buttonMode = true;
 
-    button
-        .on('pointerover', onButtonOver)
-        .on('pointerout', onButtonOut)            
+    button.on('pointerover', function() {
+            onButtonOver.bind(this, buttonWidth)
+        })
+        .on('pointerout', function() {
+            onButtonOut.bind(this, buttonWidth)
+        })            
         .on('pointerup', clickHandler)
         // .on('pointerupoutside', onNextButtonUp)            
         // .on('pointerdown', onNextButtonDown)
@@ -40,22 +45,22 @@ function createButton(label, clickHandler) {
     return button
 }
 
-function onButtonOver() {
+function onButtonOver(buttonWidth) {
     this.children[0].destroy()
     let rectangle = new PIXI.Graphics();
     rectangle.beginFill(0xd48600)
     rectangle.lineStyle(2, 0xd4d4d4, 1)
-    rectangle.drawRoundedRect(0, 0, defaultButtonWidth, defaultButtonHeight, 5)
+    rectangle.drawRoundedRect(0, 0, buttonWidth, defaultButtonHeight, 5)
     rectangle.endFill()
     this.addChildAt(rectangle, 0)
 }
 
-function onButtonOut() {
+function onButtonOut(event, buttonWidth) {
     this.children[0].destroy()
     let rectangle = new PIXI.Graphics();
     rectangle.beginFill(0xfca103)
     rectangle.lineStyle(2, 0xd4d4d4, 1)
-    rectangle.drawRoundedRect(0, 0, defaultButtonWidth, defaultButtonHeight, 5)
+    rectangle.drawRoundedRect(0, 0, buttonWidth, defaultButtonHeight, 5)
     rectangle.endFill()
     this.addChildAt(rectangle, 0)
 }
