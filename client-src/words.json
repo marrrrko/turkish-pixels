@@ -297,5 +297,166 @@
         "turkish": "onların",
         "person": 3,
         "isPlural": true
+    },
+    {
+        "id": "1d806611-e443-45f6-9764-7483a8e442e8",
+        "type": "number",
+        "english": "one",
+        "turkish": "bir",
+        "numeric": 1
+    },
+    {
+        "id": "7d452a43-6628-4074-a1a0-14f66133d117",
+        "type": "number",
+        "english": "two",
+        "turkish": "iki",
+        "numeric": 2
+    },
+    {
+        "id": "7934d7e8-fb4e-470d-ae49-48ebca309c74",
+        "type": "number",
+        "english": "three",
+        "turkish": "uç",
+        "numeric": 3
+    },
+    {
+        "id": "a77e7058-0919-4c03-bd6f-8ac1e2509abf",
+        "type": "number",
+        "english": "four",
+        "turkish": "dört",
+        "numeric": 4
+    },
+    {
+        "id": "70d4d1a0-ee5a-4a1b-a3a4-53a535cc2fe9",
+        "type": "number",
+        "english": "five",
+        "turkish": "beş",
+        "numeric": 5
+    },
+    {
+        "id": "7246c2e1-22c2-4017-bbf6-86e0965cc88b",
+        "type": "number",
+        "english": "six",
+        "turkish": "altı",
+        "numeric": 6
+    },
+    {
+        "id": "6830ca66-dd4d-4ac1-90b1-b9c8d5273463",
+        "type": "number",
+        "english": "seven",
+        "turkish": "yedi",
+        "numeric": 7
+    },
+    {
+        "id": "1e7b0944-cfe8-4537-9e47-f6a5415eccb1",
+        "type": "number",
+        "english": "eight",
+        "turkish": "sekiz",
+        "numeric": 8
+    },
+    {
+        "id": "2f88717b-332f-4342-8cc9-a27abcb3e689",
+        "type": "number",
+        "english": "nine",
+        "turkish": "dokuz",
+        "numeric": 9
+    },
+    {
+        "id": "79491693-542d-4265-901f-60703dcaa351",
+        "type": "number",
+        "english": "zero",
+        "turkish": "sıfır",
+        "numeric": 0
+    },
+    {
+        "id": "7fdc3a1a-e752-4261-ac08-06e8417be761",
+        "type": "number",
+        "english": "ten",
+        "turkish": "on",
+        "numeric": 10
+    },
+    {
+        "id": "10dc9788-5ed3-4532-8fba-2a341114af50",
+        "type": "number",
+        "english": "twenty",
+        "turkish": "yirmi",
+        "numeric": 20
+    },
+    {
+        "id": "451d9d36-a1e6-434c-8ed6-b5a54eff17a1",
+        "type": "number",
+        "english": "thirty",
+        "turkish": "otuz",
+        "numeric": 30
+    },
+    {
+        "id": "c7450e87-9098-4b3e-9149-8022798a246c",
+        "type": "number",
+        "english": "forty",
+        "turkish": "kırk",
+        "numeric": 40
+    },
+    {
+        "id": "9b1c3077-0f33-4ff2-9902-0d1e6fb22f85",
+        "type": "number",
+        "english": "fifty",
+        "turkish": "elli",
+        "numeric": 50
+    },
+    {
+        "id": "cc810d34-985f-4386-a254-6133ac751b49",
+        "type": "number",
+        "english": "sixty",
+        "turkish": "altmış",
+        "numeric": 60
+    },
+    {
+        "id": "c3d49970-02c7-4720-ade9-c4ce0ec0abdf",
+        "type": "number",
+        "english": "seventy",
+        "turkish": "yetmiş",
+        "numeric": 70
+    },
+    {
+        "id": "c4d76143-0495-4506-902e-f752632287f1",
+        "type": "number",
+        "english": "eighty",
+        "turkish": "seksen",
+        "numeric": 80
+    },
+    {
+        "id": "0a3c57c6-4519-47a2-b22b-d218ccbb7cac",
+        "type": "number",
+        "english": "ninety",
+        "turkish": "doksan",
+        "numeric": 90
+    },
+    {
+        "id": "22ec11bd-b763-4980-a2fc-d078693c9d0c",
+        "type": "number",
+        "english": "one hundred",
+        "turkish": "yüz",
+        "numeric": 100
+    },
+    {
+        "id": "b867d0e2-339e-4367-8ca0-ba445cd42d54",
+        "type": "number",
+        "english": "one thousand",
+        "turkish": "bin",
+        "numeric": 1000
+    },
+    {
+        "id": "94d2ec7d-65d1-4df2-8171-418e773b99fe",
+        "type": "number",
+        "english": "one million",
+        "turkish": "milyon",
+        "numeric": 1000000
+    },
+    {
+        "id": "215f8aa2-ba47-470a-a9f1-ff9a74befec4",
+        "type": "number",
+        "english": "one billion",
+        "turkish": "milyar",
+        "numeric": 1000000000
     }
 ]

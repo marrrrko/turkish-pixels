@@ -131,8 +131,44 @@ function buildLocativePreposition(wordDatabase) {
     return translation
 }
 
+function buildSimpleNumberTranslation(wordDatabase, min, max) {
+
+    if(max > 100)
+        throw new Error("I can't count that high yet.")
+
+    const translation = {
+        englishElements: []
+    }
+
+    const numberValue = _.random(min, max)
+    const exactMatch = wordDatabase.numbers.find(n => n.numeric === numberValue)
+    let englishNumberText
+    let turkishNumberText
+    if(exactMatch) {
+        englishNumberText = _.sample([exactMatch.numeric, exactMatch.english])
+        turkishNumberText = exactMatch.turkish
+    } else {
+        englishNumberText = numberValue.toString() 
+        const firstNumber = wordDatabase.numbers.find(n => n.numeric === (Math.round(numberValue / 10) * 10))
+        const secondNumber = wordDatabase.numbers.find(n => n.numeric === parseInt(numberValue.toString()[1]))
+        turkishNumberText = `${firstNumber.turkish} ${secondNumber.turkish}`
+    }
+    //const number = _.sample(wordDatabase.numbers.filter(n => n.numeric >= min && n.numeric <= max))
+
+    translation.englishElements.push({
+        label: "Number",
+        value: englishNumberText
+    })
+
+    translation.turkishText = turkishNumberText
+
+    return translation
+
+}
+
 module.exports = {
     buildPossesiveNoun,
     buildVerbSubjectSentence,
-    buildLocativePreposition
+    buildLocativePreposition,
+    buildSimpleNumberTranslation
 }

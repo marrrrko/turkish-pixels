@@ -12,6 +12,7 @@ async function prepareDatabaseFromJson(wordJSON) {
     wordDatabase.nouns = wordDatabase.commonNouns.concat(wordDatabase.properNouns)
     wordDatabase.verbTenses = wordJSON.filter(w => w.type == "tense")
     wordDatabase.pronouns = wordJSON.filter(w => w.type == "pronoun")
+    wordDatabase.numbers = wordJSON.filter(w => w.type == "number")
 
     wordDatabase.getVerbByEnglishText = function(english) {
         return _.find(wordDatabase.verbs, v => v.english == english)
