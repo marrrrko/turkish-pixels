@@ -84,7 +84,7 @@ function init() {
             //app.renderer.resize(window.innerWidth, window.innerHeight);
         });
 
-        PIXI.loader
+        PIXI.Loader.shared
             .add('assets/LPC_house_interior/interior.png')
             .load(setTheStage)
     }
@@ -172,14 +172,14 @@ function init() {
     }
 
     function createFloorSprite() {
-        let floorTexture = PIXI.loader.resources["assets/LPC_house_interior/interior.png"].texture
+        let floorTexture = PIXI.Loader.shared.resources["assets/LPC_house_interior/interior.png"].texture
         floorTexture.frame = new PIXI.Rectangle(0, 96, 32, 32)
         let floorSprite = new PIXI.Sprite(floorTexture)
 
         floorSprite.x = 100
         floorSprite.y = 100
 
-        return new PIXI.extras.TilingSprite(floorTexture, appContext.effectiveWidth, appContext.effectiveHeight);
+        return new PIXI.TilingSprite(floorTexture, appContext.effectiveWidth, appContext.effectiveHeight);
     }
 
     function gameLoop(delta){
