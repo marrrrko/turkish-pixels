@@ -189,3 +189,54 @@ test("makePossesive", async function(t) {
         "ailesi"
     )
 })
+
+test("Make location", async function(t) {
+    t.equal(
+        wordTools.makeLocativeTo("ev"),
+        "eve"
+    )
+    t.equal(
+        wordTools.makeLocativeTo("gün"),
+        "güne"
+    )
+    t.equal(
+        wordTools.makeLocativeTo("akşam"),
+        "akşama"
+    )
+    t.equal(
+        wordTools.makeLocativeTo("köprü"),
+        "köprüye"
+    )
+    t.equal(
+        wordTools.makeLocativeTo("sinema"),
+        "sinemaya"
+    )
+    t.equal(
+        wordTools.makeLocativeAt("ev"),
+        "evde"
+    )
+    t.equal(
+        wordTools.makeLocativeAt("deniz"),
+        "denizde"
+    )
+    t.equal(
+        wordTools.makeLocativeAt("çadır"),
+        "çadırda"
+    )
+    t.equal(
+        wordTools.makeLocativeAt("otobüs"),
+        "otobüste"
+    )
+    t.equal(
+        wordTools.makeLocativeFrom("göl"),
+        "gölden"
+    )
+    t.equal(
+        wordTools.makeLocativeFrom("okul"),
+        "okuldan"
+    )
+    t.equal(
+        wordTools.makeLocativeFrom("hizmet"),
+        "hizmetten"
+    )
+})

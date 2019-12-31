@@ -17,11 +17,19 @@ export default
         }
     },
     {
-        "name": "Possessives",
+        "name": "ossessives",
         "label": "Possessives",
         "gameCreator": simpleTranslations.createGame,
         "config": {
             "translationCreator": translations.buildPossesiveNoun
+        }
+    },
+    {
+        "name": "to-at-from",
+        "label": "To/At/From",
+        "gameCreator": simpleTranslations.createGame,
+        "config": {
+            "translationCreator": translations.buildLocativePreposition
         }
     }
 ]

@@ -8,6 +8,8 @@ async function prepareDatabaseFromJson(wordJSON) {
     wordDatabase.all = wordJSON
     wordDatabase.verbs = wordJSON.filter(w => w.type == "verb")
     wordDatabase.commonNouns = wordJSON.filter(w => w.type == "common noun")
+    wordDatabase.properNouns = wordJSON.filter(w => w.type == "proper noun")
+    wordDatabase.nouns = wordDatabase.commonNouns.concat(wordDatabase.properNouns)
     wordDatabase.verbTenses = wordJSON.filter(w => w.type == "tense")
     wordDatabase.pronouns = wordJSON.filter(w => w.type == "pronoun")
 

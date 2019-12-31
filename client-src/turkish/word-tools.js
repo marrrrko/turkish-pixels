@@ -209,6 +209,36 @@ function conjugatePresentContinuousVerb(verb, person, isPlural, negativeForm, qu
     return expression.join("")
 }
 
+function makeLocativeTo(location) {
+    location = location.trim()
+    const letter = getHarmonizedVowel2(location)
+    if(letterTools.wordEndsWithLetterFromGroup(location, letterTools.LETTER_GROUPS.CONSONANTS)) {        
+        return `${location}${letter}`
+    } else {
+        return `${location}y${letter}`
+    }
+}
+
+function makeLocativeAt(location) {
+    location = location.trim()
+    const letter = getHarmonizedVowel2(location)
+    if(letterTools.wordEndsWithLetterFromGroup(location, letterTools.LETTER_GROUPS.HARD_CONSONANTS)) {
+        return `${location}t${letter}`
+    } else {
+        return `${location}d${letter}`
+    }
+}
+
+function makeLocativeFrom(location) {
+    location = location.trim()
+    const letter = getHarmonizedVowel2(location)
+    if(letterTools.wordEndsWithLetterFromGroup(location, letterTools.LETTER_GROUPS.HARD_CONSONANTS)) {
+        return `${location}t${letter}n`
+    } else {
+        return `${location}d${letter}n`
+    }
+}
+
 module.exports = {
     getHarmonizedVowel4,
     getHarmonizedVowel2,
@@ -218,5 +248,8 @@ module.exports = {
     makePossesive,
     getPossesivePronoun,
     softenVerb,
-    softenNoun
+    softenNoun,
+    makeLocativeTo,
+    makeLocativeAt,
+    makeLocativeFrom
 }

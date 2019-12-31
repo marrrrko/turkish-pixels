@@ -101,7 +101,38 @@ function buildPossesiveNoun(wordDatabase) {
     return translation
 }
 
+function buildLocativePreposition(wordDatabase) {
+    const translation = {
+        englishElements: []
+    }
+
+    let locations = wordDatabase.nouns.filter(n => n.locative)
+    let location = _.sample(locations)
+    let preposition = _.sample(["to", "at", "from"])
+
+    translation.englishElements.push({
+        label: "Place",
+        value: location.english
+    })
+
+    translation.englishElements.push({
+        label: "Place",
+        value: preposition
+    })
+
+    translation.turkishText = "N/A"
+    if(preposition == "to")
+        translation.turkishText = wordTools.makeLocativeTo(location.turkish)
+    else if (preposition == "at")
+        translation.turkishText = wordTools.makeLocativeAt(location.turkish)
+    else if (preposition == "from")
+        translation.turkishText = wordTools.makeLocativeFrom(location.turkish)
+
+    return translation
+}
+
 module.exports = {
     buildPossesiveNoun,
-    buildVerbSubjectSentence
+    buildVerbSubjectSentence,
+    buildLocativePreposition
 }
