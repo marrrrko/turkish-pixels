@@ -149,7 +149,7 @@ function buildSimpleNumberTranslation(wordDatabase, min, max) {
         turkishNumberText = exactMatch.turkish
     } else {
         englishNumberText = numberValue.toString() 
-        const firstNumber = wordDatabase.numbers.find(n => n.numeric === (Math.round(numberValue / 10) * 10))
+        const firstNumber = wordDatabase.numbers.find(n => n.numeric === (Math.floor(numberValue / 10) * 10))
         const secondNumber = wordDatabase.numbers.find(n => n.numeric === parseInt(numberValue.toString()[1]))
         turkishNumberText = `${firstNumber.turkish} ${secondNumber.turkish}`
     }
