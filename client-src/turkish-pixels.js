@@ -55,19 +55,20 @@ function init() {
     const minWidth = 300
     const minHeight = 500
     function createApp() {    
+
+        const adaptedWidth = window.innerWidth > minWidth ? window.innerWidth : minWidth
+        const adaptedHeigh = window.innerHeight > minHeight ? window.innerHeight : minHeight
+
         appContext.app = new PIXI.Application({
-            width: minWidth,
-            height: minHeight,
+            width: adaptedWidth,
+            height: adaptedHeigh,
             antialias: true,
             resolution: appContext.resolutionFactor,
-
+            autoDensity : true
         })
         appContext.app.renderer.view.style.position = "absolute";
         appContext.app.renderer.view.style.display = "block";
-        appContext.app.renderer.autoResize = true;
-        const adaptedWidth = window.innerWidth > minWidth ? window.innerWidth : minWidth
-        const adaptedHeigh = window.innerHeight > minHeight ? window.innerHeight : minHeight
-        appContext.app.renderer.resize(adaptedWidth, adaptedHeigh);
+        appContext.app.renderer.autoResize = true;        
         
         appContext.pixelWidth = appContext.app.renderer.width
         appContext.pixelHeight = appContext.app.renderer.height
