@@ -163,6 +163,24 @@
         "turkish": "görmek"
     },
     {
+        "id":"3278e61f-319c-4719-a6c1-d1df94c8a43e",
+        "type": "verb",
+        "english": "to give",
+        "turkish": "vermek"
+    },
+    {
+        "id":"d312c9cf-8d22-4a7a-a55e-4842015b5f85",
+        "type": "verb",
+        "english": "to wait",
+        "turkish": "beklemek"
+    },
+    {
+        "id": "328b0a5a-10d5-41c8-87c5-f5f672e2b52a",
+        "type": "verb",
+        "english": "to write",
+        "turkish": "yazmak"
+    },
+    {
         "id": "497983f0-6afb-4cc6-a6a5-e3ac7dcce870",
         "type": "tense",
         "english": "present continuous",

@@ -16,9 +16,26 @@ function charIsInLetterGroup(char, letterGroup) {
     return char.length == 1 && _.includes(letterGroup, char.toLowerCase())
 }
 
+function wordEndsInVowel(word) {
+    return wordEndsWithLetterFromGroup(word, LETTER_GROUPS.VOWELS)
+}
+
+function wordEndsInHardConsonant(word) {
+    return wordEndsWithLetterFromGroup(word, LETTER_GROUPS.HARD_CONSONANTS)
+}
+
 function wordEndsWithLetterFromGroup(word, letterGroup) {
     let lastCharacterOfWord = word.trim().slice(-1).toLowerCase()
     return _.includes(letterGroup, lastCharacterOfWord)
+}
+
+function wordStartsWithVowel(word) {
+    return wordStartsWithLetterFromGroup(word, LETTER_GROUPS.VOWELS)
+}
+
+function wordStartsWithLetterFromGroup(word, letterGroup) {
+    let firstCharacterOfWord = word.trim()[0].toLowerCase()
+    return _.includes(letterGroup, firstCharacterOfWord)
 }
 
 function getLastLetterInWordOfGroup(word, letterGroup) {
@@ -37,8 +54,11 @@ module.exports = {
     LETTER_GROUPS,
     charIsInLetterGroup,
     wordEndsWithLetterFromGroup,
+    wordEndsInVowel,
+    wordEndsInHardConsonant,
+    wordStartsWithVowel,
     getLastLetterInWordOfGroup,
     getLastLetter,
-    getLastVowel
+    getLastVowel    
 }
 

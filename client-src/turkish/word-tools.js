@@ -72,14 +72,18 @@ function softenNoun(word) {
         word,
         letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS)
 
-    if(needsSoftenning) {
-        let lastLetter = letterTools.getLastLetter(word)
-        let hardConsonentIndex = letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS.indexOf(lastLetter)
-        let softenedConsonent = letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS_VOWEL_MATCHES[hardConsonentIndex]
-        return word.trim().slice(0,-1) + softenedConsonent
+    if(needsSoftenning) {        
+        return soften(word)
     } else {
         return word
     }
+}
+
+function soften(word) {
+    const lastLetter = letterTools.getLastLetter(word)
+    const hardConsonentIndex = letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS.indexOf(lastLetter)
+    const softenedConsonent = letterTools.LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS_VOWEL_MATCHES[hardConsonentIndex]
+    return word.trim().slice(0,-1) + softenedConsonent
 }
 
 function makePossesive(noun, person, isPlural) {
@@ -178,13 +182,15 @@ function getVerbRoot(infinitiveVerb) {
 function conjugateVerb(verb, tense, person, isPlural, negativeForm, questionForm) {
     switch(tense.english) {
         case "present continuous":
-            return conjugatePresentContinuousVerb(verb, person, isPlural, negativeForm, questionForm)
+            return conjugatePresentContinuous(verb, person, isPlural, negativeForm, questionForm)
+        case "future":
+            return conjugateFuture(verb, person, isPlural, negativeForm, questionForm)
         default:
             throw new Error("Sorry. I don't know how to conjugate that.")
     }
 }
 
-function conjugatePresentContinuousVerb(verb, person, isPlural, negativeForm, questionForm) {
+function conjugatePresentContinuous(verb, person, isPlural, negativeForm, questionForm) {
     let expression = []
     let rootWord = getVerbRoot(verb.turkish)
     
@@ -207,6 +213,77 @@ function conjugatePresentContinuousVerb(verb, person, isPlural, negativeForm, qu
     }
 
     return expression.join("")
+}
+
+function conjugateFuture(verb, person, isPlural, negativeForm, questionForm) {
+    const rootWord = getVerbRoot(verb.turkish)
+
+    let conjugatedVerb = appendHarmonizedSuffix(rootWord,"_c_k")
+
+    if(!isPlural) {
+        conjugatedVerb = appendHarmonizedSuffix(conjugatedVerb, ["*m", "s*n", ""][person - 1])
+    } else {
+        conjugatedVerb = appendHarmonizedSuffix(conjugatedVerb, ["*z", "s*n*z", "l_r"][person - 1])
+    }
+    return conjugatedVerb
+}
+
+function appendHarmonizedSuffix(root, suffixPattern) {    
+    root = root.trim()
+    suffixPattern = suffixPattern.trim()
+    const expression = []
+
+    if(!suffixPattern)
+        return root
+
+    const rootEndsInVowel = letterTools.wordEndsInVowel(root)
+    const rootEndsInHardConsonant = letterTools.wordEndsInHardConsonant(root)
+    const suffixStartsWithVowel = (
+        letterTools.wordStartsWithVowel(suffixPattern)
+        || suffixPattern[0] == "_"
+        || suffixPattern[0] == "*"
+    )
+
+    if(rootEndsInVowel && suffixStartsWithVowel) {
+        expression.push(root)
+        expression.push("y")
+    } else if(rootEndsInHardConsonant && suffixStartsWithVowel) {
+        expression.push(soften(root))
+    } else {
+        expression.push(root)
+    }
+
+    return harmonizePattern(expression.join(""), suffixPattern)
+}
+
+function harmonizePattern(baseWord, suffixPattern) {
+    const suffixes = `${baseWord}${suffixPattern}`.split("_")
+    return suffixes.reduce(harmonize2PatternReducer, "") 
+}
+
+function harmonize2PatternReducer(accumulator, current) {
+
+    const contains4Pattern = current.indexOf("*") > -1
+
+    if(accumulator === "" && !contains4Pattern)
+        return current    
+    
+    if(contains4Pattern) {
+        const suffixes = `${accumulator}${current}`.split("*")
+        return suffixes.reduce(harmonize4PatternReducer, "")
+    } else {
+        const nextVowel = getHarmonizedVowel2(accumulator)
+        return `${accumulator}${nextVowel}${current}`
+    }
+}
+
+function harmonize4PatternReducer(accumulator, current) {
+    if(accumulator === "")
+        return current
+
+    const nextVowel = getHarmonizedVowel4(accumulator)
+
+    return `${accumulator}${nextVowel}${current}`
 }
 
 function makeLocativeTo(location) {
