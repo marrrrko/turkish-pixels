@@ -21,7 +21,7 @@ module.exports = {
         {
             apply: (compiler) => {
               compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
-                exec('node client-src/test/turkish.test.js', (err, stdout, stderr) => {
+                exec('node node_modules/blue-tape/bin/blue-tape.js ./client-src/test/**/*.js', (err, stdout, stderr) => {
                   if (stdout) process.stdout.write(stdout);
                   if (stderr) process.stderr.write(stderr);
                 });

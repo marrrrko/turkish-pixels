@@ -63,4 +63,9 @@ test("conjugateFuture", async function(t) {
     t.equal(
         wordTools.conjugateVerb(toWrite, future, 2, true),
         "yazacaksınız")
+
+    let toWork = wordDatabase.getVerbByTurkishText("çalışmak")
+    t.equal(
+        wordTools.conjugateVerb(toWork, future, 1, true),
+        "çalışacağız")        
 })

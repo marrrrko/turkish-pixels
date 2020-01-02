@@ -8,11 +8,24 @@ export default
         label: "Present tense",
         gameCreator: simpleTranslations.createGame,
         config: {
-            translationCreator: translations.buildVerbSubjectSentence,
+            translationCreator: translations.buildVerb,
             arguments: [
                 "present continuous",
                 true,
                 true
+            ]
+        }
+    },
+    {
+        id: "63100a94-231d-40fe-a6d1-4717844171d7",
+        label: "Future Tense",
+        gameCreator: simpleTranslations.createGame,
+        config: {
+            translationCreator: translations.buildVerb,
+            arguments: [
+                "future",
+                false,
+                false
             ]
         }
     },

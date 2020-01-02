@@ -1,7 +1,7 @@
 const wordTools = require('./word-tools')
 const _ = require('lodash')
 
-function buildVerbSubjectSentence(wordDatabase, tenseName, negativeFormAllowed, questionFormAllowed) {
+function buildVerb(wordDatabase, tenseName, negativeFormAllowed, questionFormAllowed) {
     const translation = {
         englishElements: []
     }
@@ -9,7 +9,7 @@ function buildVerbSubjectSentence(wordDatabase, tenseName, negativeFormAllowed, 
     const allowedTenses = wordDatabase.verbTenses.filter(t => t.english == tenseName)
 
     const verb = _.sample(wordDatabase.verbs)
-    const subject = _.sample(wordDatabase.pronouns)
+    const subject = _.sample(wordDatabase.pronouns.filter(p => !p.subtype || p.subtype !== "possessive"))
     const tense = _.sample(allowedTenses)
     let negativeForm = false
     if(negativeFormAllowed) {
@@ -168,7 +168,7 @@ function buildSimpleNumberTranslation(wordDatabase, min, max) {
 
 module.exports = {
     buildPossesiveNoun,
-    buildVerbSubjectSentence,
+    buildVerb,
     buildLocativePreposition,
     buildSimpleNumberTranslation
 }

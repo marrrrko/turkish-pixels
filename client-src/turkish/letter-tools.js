@@ -24,6 +24,10 @@ function wordEndsInHardConsonant(word) {
     return wordEndsWithLetterFromGroup(word, LETTER_GROUPS.HARD_CONSONANTS)
 }
 
+function wordEndsInVowelChangingHardConsonant(word) {
+    return wordEndsWithLetterFromGroup(word, LETTER_GROUPS.HARD_VOWEL_CHANGING_CONSONANTS)
+}
+
 function wordEndsWithLetterFromGroup(word, letterGroup) {
     let lastCharacterOfWord = word.trim().slice(-1).toLowerCase()
     return _.includes(letterGroup, lastCharacterOfWord)
@@ -56,6 +60,7 @@ module.exports = {
     wordEndsWithLetterFromGroup,
     wordEndsInVowel,
     wordEndsInHardConsonant,
+    wordEndsInVowelChangingHardConsonant,
     wordStartsWithVowel,
     getLastLetterInWordOfGroup,
     getLastLetter,

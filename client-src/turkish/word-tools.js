@@ -237,7 +237,7 @@ function appendHarmonizedSuffix(root, suffixPattern) {
         return root
 
     const rootEndsInVowel = letterTools.wordEndsInVowel(root)
-    const rootEndsInHardConsonant = letterTools.wordEndsInHardConsonant(root)
+    const rootEndsInVowelChangingHardConsonant = letterTools.wordEndsInVowelChangingHardConsonant(root)
     const suffixStartsWithVowel = (
         letterTools.wordStartsWithVowel(suffixPattern)
         || suffixPattern[0] == "_"
@@ -247,7 +247,7 @@ function appendHarmonizedSuffix(root, suffixPattern) {
     if(rootEndsInVowel && suffixStartsWithVowel) {
         expression.push(root)
         expression.push("y")
-    } else if(rootEndsInHardConsonant && suffixStartsWithVowel) {
+    } else if(rootEndsInVowelChangingHardConsonant && suffixStartsWithVowel) {
         expression.push(soften(root))
     } else {
         expression.push(root)
