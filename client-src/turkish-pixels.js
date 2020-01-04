@@ -27,6 +27,18 @@ function init() {
         baseMargin: 5        
     }
 
+    function loadTraviso() {
+        return new Promise(function(resolve, reject) {
+            const script = document.createElement('script');
+            script.onload = function () {
+                resolve()
+            };
+            script.src = "assets/traviso.dev.js";
+
+            document.head.appendChild(script);
+        })
+    }
+
     function createLaunchScreen() {
         let goButton = document.getElementById("go")
         goButton.addEventListener("click", (e) => {
@@ -187,5 +199,6 @@ function init() {
 
     }
 
-    createLaunchScreen()
+    loadTraviso()
+    .then(createLaunchScreen())
 }

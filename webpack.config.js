@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const exec = require('child_process').exec;
-
+const webpack = require('webpack')
 
 module.exports = {
     mode: "development",
@@ -27,7 +27,10 @@ module.exports = {
                 });
               });
             }
-          }
+        },
+        new webpack.ProvidePlugin({
+            PIXI: 'pixi.js'        
+        })
     ],
     module: {
         rules: [
