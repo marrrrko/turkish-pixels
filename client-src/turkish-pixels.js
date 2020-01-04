@@ -60,15 +60,15 @@ function init() {
         const adaptedHeigh = window.innerHeight > minHeight ? window.innerHeight : minHeight
 
         appContext.app = new PIXI.Application({
-            width: adaptedWidth,
-            height: adaptedHeigh,
+            width: minWidth,
+            height: minHeight,
             antialias: true,
-            resolution: appContext.resolutionFactor,
-            autoDensity : true
+            resolution: appContext.resolutionFactor
         })
         appContext.app.renderer.view.style.position = "absolute";
         appContext.app.renderer.view.style.display = "block";
-        appContext.app.renderer.autoResize = true;        
+        appContext.app.renderer.autoResize = true; 
+        appContext.app.renderer.resize(adaptedWidth, adaptedHeigh);       
         
         appContext.pixelWidth = appContext.app.renderer.width
         appContext.pixelHeight = appContext.app.renderer.height
@@ -85,7 +85,7 @@ function init() {
             //app.renderer.resize(window.innerWidth, window.innerHeight);
         });
 
-        PIXI.Loader.shared
+        PIXI.loader
             .add('assets/LPC_house_interior/interior.png')
             .load(setTheStage)
     }
@@ -173,14 +173,14 @@ function init() {
     }
 
     function createFloorSprite() {
-        let floorTexture = PIXI.Loader.shared.resources["assets/LPC_house_interior/interior.png"].texture
+        let floorTexture = PIXI.loader.resources["assets/LPC_house_interior/interior.png"].texture
         floorTexture.frame = new PIXI.Rectangle(0, 96, 32, 32)
         let floorSprite = new PIXI.Sprite(floorTexture)
 
         floorSprite.x = 100
         floorSprite.y = 100
 
-        return new PIXI.TilingSprite(floorTexture, appContext.effectiveWidth, appContext.effectiveHeight);
+        return new PIXI.extras.TilingSprite(floorTexture, appContext.effectiveWidth, appContext.effectiveHeight);
     }
 
     function gameLoop(delta){
