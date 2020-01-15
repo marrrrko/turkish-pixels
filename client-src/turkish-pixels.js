@@ -97,9 +97,37 @@ function init() {
             //app.renderer.resize(window.innerWidth, window.innerHeight);
         });
 
-        PIXI.loader
-            .add('assets/LPC_house_interior/interior.png')
-            .load(setTheStage)
+        // PIXI.loader
+        //     .add('assets/LPC_house_interior/interior.png')
+        //     .load(setTheStage)
+
+        createTurkey()
+    }
+
+    function createTurkey() {
+        var instanceConfig = {
+            mapDataPath: "assets/map-data.json", 
+            assetsToLoad: [
+                "assets/grass.png",
+                "assets/vox/arbol_1.png",
+                "assets/vox/arbol_2.png",
+                "assets/vox/arbol_3.png",
+                "assets/vox/arbol_4.png",
+                "assets/vox/arbol_5.png",
+            ],
+            tileHeight: 398,
+            isoAngle: 36
+        };
+    
+        var engine = TRAVISO.getEngineInstance(instanceConfig);
+        appContext.app.stage.addChild(engine);
+        setTimeout(function() {
+            engine.setZoomParameters(0.25, 10, 3, 0, false)
+            engine.zoomOut()
+            engine.zoomOut()
+            engine.zoomOut()
+        }, 100)
+        window.tr = engine
     }
 
     async function setTheStage() {           
