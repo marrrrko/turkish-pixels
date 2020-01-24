@@ -1,0 +1,94 @@
+{
+    "frames": {
+        "fred_standing_SE.png": {
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "sourceSize": {
+                "w": 317,
+                "h": 431
+            }
+        },
+        "fred_standing_NE.png": {
+            "frame": {
+                "x": 317,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "sourceSize": {
+                "w": 317,
+                "h": 431
+            }
+        },
+        "fred_standing_NW.png": {
+            "frame": {
+                "x": 634,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "sourceSize": {
+                "w": 317,
+                "h": 431
+            }
+        },
+        "fred_standing_SW.png": {
+            "frame": {
+                "x": 951,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 317,
+                "h": 431
+            },
+            "sourceSize": {
+                "w": 317,
+                "h": 431
+            }
+        }
+    },
+    "meta": {
+        "app": "https://www.leshylabs.com/apps/sstool/",
+        "version": "Leshy SpriteSheet Tool v0.8.4",
+        "image": "fred.png",
+        "size": {
+            "w": 1268,
+            "h": 431
+        },
+        "scale": 1
+    }
+}

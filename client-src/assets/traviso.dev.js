@@ -788,7 +788,8 @@ TRAVISO.MoveEngine = function(engine, defaultSpeed)
      * @protected
      * @default 3
      */
-    this.DEFAULT_SPEED = defaultSpeed || 3;
+    var resolutionFactor = Math.round(window.devicePixelRatio * 100) / 100
+    this.DEFAULT_SPEED = defaultSpeed || 15 / resolutionFactor;
     
     /**
      * Specifies if the move-engine will process the object movements.

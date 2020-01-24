@@ -97,37 +97,53 @@ function init() {
             //app.renderer.resize(window.innerWidth, window.innerHeight);
         });
 
-        // PIXI.loader
-        //     .add('assets/LPC_house_interior/interior.png')
-        //     .load(setTheStage)
-
         createTurkey()
     }
 
     function createTurkey() {
-        var instanceConfig = {
+        var travisoEngineConfig = {
             mapDataPath: "assets/map-data.json", 
             assetsToLoad: [
-                "assets/grass.png",
-                "assets/vox/arbol_1.png",
-                "assets/vox/arbol_2.png",
-                "assets/vox/arbol_3.png",
-                "assets/vox/arbol_4.png",
-                "assets/vox/arbol_5.png",
+                "assets/grass_s.png",
+                "assets/vox/rocas_1_s.png",
+                "assets/vox/arbol_1_s.png",
+                "assets/vox/arbol_2_s.png",
+                "assets/vox/arbol_3_s.png",
+                "assets/vox/arbol_4_s.png",
+                "assets/vox/arbol_5_s.png",
+                "assets/fred_map_s.json"
             ],
-            tileHeight: 398,
-            isoAngle: 36
+            tileHeight: 98,
+            isoAngle: 36,
+            mapDraggable: false,
+            highlightPath: false,
+            initialPositionFrame: { 
+                x: 00,
+                y: 0,
+                w: appContext.effectiveWidth,
+                h: appContext.effectiveHeight
+            },
+            engineInstanceReadyCallback: onTravisoEngineReady
         };
     
-        var engine = TRAVISO.getEngineInstance(instanceConfig);
-        appContext.app.stage.addChild(engine);
-        setTimeout(function() {
-            engine.setZoomParameters(0.25, 10, 3, 0, false)
-            engine.zoomOut()
-            engine.zoomOut()
-            engine.zoomOut()
-        }, 100)
-        window.tr = engine
+        appContext.engine = TRAVISO.getEngineInstance(travisoEngineConfig);
+        
+        // setTimeout(function() {
+        //     engine.centralizeToLocation(4, 3)
+        // }, 500)
+        window.tr = appContext.engine
+    }
+
+    function onTravisoEngineReady() {
+        appContext.app.stage.addChild(appContext.engine);
+        appContext.engine.centralizeToLocation(6, 6)
+
+        var basicText = new PIXI.Text('Merhaba')
+        basicText.x = appContext.engine.getTilePosXFor(20,25);
+        basicText.y = appContext.engine.getTilePosYFor(20,25);
+        var mycont = new PIXI.Container();
+        appContext.engine.mapContainer.addChild(mycont);
+        mycont.addChild(basicText);
     }
 
     async function setTheStage() {           
