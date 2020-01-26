@@ -4,6 +4,8 @@ const gamesList = require('./games.js')
 const scaleToWindow = require('./scaleToWindow')
 const buttonsTool = require('./buttons-tool')
 
+const forestWorld = require('./worlds/forest')
+
 function docReady(fn) {
     if (document.readyState === "complete" || document.readyState === "interactive") {
         setTimeout(fn, 1)
@@ -101,49 +103,11 @@ function init() {
     }
 
     function createTurkey() {
-        var travisoEngineConfig = {
-            mapDataPath: "assets/map-data.json", 
-            assetsToLoad: [
-                "assets/grass_s.png",
-                "assets/vox/rocas_1_s.png",
-                "assets/vox/arbol_1_s.png",
-                "assets/vox/arbol_2_s.png",
-                "assets/vox/arbol_3_s.png",
-                "assets/vox/arbol_4_s.png",
-                "assets/vox/arbol_5_s.png",
-                "assets/fred_map_s.json"
-            ],
-            tileHeight: 98,
-            isoAngle: 36,
-            mapDraggable: false,
-            highlightPath: false,
-            initialPositionFrame: { 
-                x: 00,
-                y: 0,
-                w: appContext.effectiveWidth,
-                h: appContext.effectiveHeight
-            },
-            engineInstanceReadyCallback: onTravisoEngineReady
-        };
-    
-        appContext.engine = TRAVISO.getEngineInstance(travisoEngineConfig);
-        
-        // setTimeout(function() {
-        //     engine.centralizeToLocation(4, 3)
-        // }, 500)
-        window.tr = appContext.engine
-    }
-
-    function onTravisoEngineReady() {
-        appContext.app.stage.addChild(appContext.engine);
-        appContext.engine.centralizeToLocation(6, 6)
-
-        var basicText = new PIXI.Text('Merhaba')
-        basicText.x = appContext.engine.getTilePosXFor(20,25);
-        basicText.y = appContext.engine.getTilePosYFor(20,25);
-        var mycont = new PIXI.Container();
-        appContext.engine.mapContainer.addChild(mycont);
-        mycont.addChild(basicText);
+        appContext.currentWorld = forestWorld.createWorld(
+            appContext.effectiveWidth,
+            appContext.effectiveHeight
+        )
+        appContext.app.stage.addChild(appContext.currentWorld.getEngine());
     }
 
     async function setTheStage() {           
