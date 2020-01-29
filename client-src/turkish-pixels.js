@@ -99,28 +99,34 @@ function init() {
             //app.renderer.resize(window.innerWidth, window.innerHeight);
         });
 
-        createTurkey()
+        window.appContext = appContext  
+
+        PIXI.loader
+            .add("assets/apple.png")
+            .add("assets/LPC_house_interior/interior.png")
+            .load(setTheStage);
     }
 
     function createTurkey() {
-        appContext.currentWorld = forestWorld.createWorld(
+        appContext.currentWorldEngine = forestWorld.createWorldEngine(
             appContext.effectiveWidth,
-            appContext.effectiveHeight
+            appContext.effectiveHeight,
+            () => forestWorld.playWorld(PIXI, appContext.currentWorldEngine, appContext.wordDatabase)
         )
-        appContext.app.stage.addChild(appContext.currentWorld.getEngine());
+        appContext.app.stage.addChild(appContext.currentWorldEngine);
     }
 
     async function setTheStage() {           
         appContext.wordDatabase = await vocabulary.loadWordDatabaseFromAPI("/api/words")
+        createTurkey()
+        // appContext.menu = createGameMenuContainer()        
+        // appContext.app.stage.addChild(appContext.menu)
 
-        appContext.menu = createGameMenuContainer()        
-        appContext.app.stage.addChild(appContext.menu)
+        // appContext.topBar = createTopBarContainer()
+        // appContext.app.stage.addChild(appContext.topBar)
 
-        appContext.topBar = createTopBarContainer()
-        appContext.app.stage.addChild(appContext.topBar)
-
-        appContext.app.renderer.render(appContext.app.stage)
-        appContext.app.ticker.add(delta => gameLoop(delta))
+        // appContext.app.renderer.render(appContext.app.stage)
+        // appContext.app.ticker.add(delta => gameLoop(delta))
     }
 
     function createTopBarContainer() {

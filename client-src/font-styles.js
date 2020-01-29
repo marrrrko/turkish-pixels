@@ -30,10 +30,21 @@ const screenSubtitleTextStyle = new PIXI.TextStyle({
     fill: "red"
 });
 
+const forestWordTextStyle = new PIXI.TextStyle({
+    fontFamily: "Courier",
+    fontSize: 20,
+    fill: "white",
+    fontWeight: "800",
+    dropShadow: true,
+    dropShadowColor: 0x202020,
+    dropShadowBlur: 20
+});
+
 module.exports = {
     buttonTextStyle,
     screenMainTextStyle,
     answerTextStyle,
     subTextStyle,
-    screenSubtitleTextStyle
+    screenSubtitleTextStyle,
+    forestWordTextStyle
 }
