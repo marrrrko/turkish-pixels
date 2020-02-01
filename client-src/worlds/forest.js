@@ -1,141 +1,270 @@
 const fontStyles = require('../font-styles')
 const _ = require('lodash')
+const PIXI = require('pixi.js')
 
-let lastTargetWord = null
+function createWorld(appContext) {
 
-function createWorldEngine(width, height, readyCallback) {    
+    let lastTargetWord = null
+    let engine = null
+    let guessPane = null
 
-    const engineConfig = {
-        mapDataPath: "assets/forest-map.json", 
-        assetsToLoad: [
-            "assets/grass_s.png",
-            "assets/vox/rocas_1_s.png",
-            "assets/vox/arbol_1_s.png",
-            "assets/vox/arbol_2_s.png",
-            "assets/vox/arbol_3_s.png",
-            "assets/vox/arbol_4_s.png",
-            "assets/vox/arbol_5_s.png",
-            "assets/fred_map_s.json"
-        ],
-        tileHeight: 98,
-        isoAngle: 36,
-        mapDraggable: false,
-        highlightPath: false,
-        highlightTargetTile: false,
-        initialPositionFrame: { 
-            x: 00,
-            y: 0,
-            w: width,
-            h: height
-        },
-        backgroundColor: 0x356e08,
-        engineInstanceReadyCallback: readyCallback,
-        objectReachedDestinationCallback: playerHasReachedDestination
-    };
+    const createWorldEngine = function() {    
 
-    return TRAVISO.getEngineInstance(engineConfig);
-}    
+        const engineConfig = {
+            mapDataPath: "assets/forest-map.json", 
+            assetsToLoad: [
+                "assets/grass_s.png",
+                "assets/vox/rocas_1_s.png",
+                "assets/vox/arbol_1_s.png",
+                "assets/vox/arbol_2_s.png",
+                "assets/vox/arbol_3_s.png",
+                "assets/vox/arbol_4_s.png",
+                "assets/vox/arbol_5_s.png",
+                "assets/fred_map_s.json"
+            ],
+            tileHeight: 98,
+            isoAngle: 36,
+            mapDraggable: false,
+            highlightPath: false,
+            highlightTargetTile: false,
+            initialPositionFrame: { 
+                x: 00,
+                y: 0,
+                w: appContext.effectiveWidth,
+                h: appContext.effectiveHeight
+            },
+            backgroundColor: 0x356e08,
+            engineInstanceReadyCallback: playWorld,
+            objectReachedDestinationCallback: playerHasReachedDestination
+        }
 
-function playWorld(pixi, worldEngine, wordDatabase) {
-        spreadSomeWords(pixi, worldEngine, wordDatabase)        
-}
+        return TRAVISO.getEngineInstance(engineConfig)
+    }    
 
-function playerHasReachedDestination(view) {
-    console.log("I'm at " + JSON.stringify(view.mapPos))
-    if(lastTargetWord) {
-        console.log("Word: " + JSON.stringify(lastTargetWord))
-        const distanceToClickedWord = 
-            Math.pow(
-                Math.pow(Math.abs(view.mapPos.c - lastTargetWord.c),2)
-                + Math.pow(Math.abs(view.mapPos.r - lastTargetWord.r),2)
-            , 0.5)
+    const playWorld = function() {
+            spreadSomeWords()        
+    }
 
-        if(distanceToClickedWord <= 1.5) {
-            setTimeout(() => {
-                alert(lastTargetWord.word.english)
-                lastTargetWord = null
-            }, 250)
+    const calculateDistance =function(pos1, pos2) {
+        return Math.pow(
+                Math.pow(Math.abs(pos1.c - pos2.c),2)
+                + Math.pow(Math.abs(pos1.r - pos2.r),2)
+        , 0.5)
+    }
+
+    const WORD_MAX_DISTANCE = 1.5
+    const playerHasReachedDestination = function(view) {
+        if(lastTargetWord) {            
+            const distanceToClickedWord = calculateDistance(view.mapPos, lastTargetWord.pos)        
+
+            if(distanceToClickedWord <= WORD_MAX_DISTANCE) {
+                setTimeout(() => {                    
+                    guessWord(lastTargetWord.word)
+                    lastTargetWord = null
+                }, 250)
+            }
         }
     }
-}
 
-function spreadSomeWords(pixi, worldEngine, wordDatabase) {
-    let treePositions = getTreePositions(worldEngine)    
+    const guessWord = function(word) {
 
-    const appleTexture = pixi.loader.resources["assets/apple.png"].texture    
-    //appleTexture.frame = new pixi.Rectangle(0, 0, 95, 95)    
+        const paneWidth = 300
+        const paneHeight = 500
 
-    treePositions.forEach(p => {
-        const word = _.sample(wordDatabase.all)
-        addWordAtLocation(pixi, worldEngine, p, word, appleTexture)
-    })
-}
+        const rectangle = new PIXI.Graphics();
+        const backgroundColor = 0xffd000
+        rectangle.beginFill(backgroundColor)
+        rectangle.lineStyle(4, 0x242424, 1)
+        rectangle.drawRoundedRect(0, 0, paneWidth, paneHeight, 10)
+        rectangle.endFill()
 
-function addWordAtLocation(pixi, worldEngine, position, word, appleTexture) {
-    const wordFruit = createWordFruit(pixi, worldEngine, position, word, appleTexture)
-    window.wf = window.wf || []
-    window.wf.push(wordFruit)
-    worldEngine.mapContainer.addChild(wordFruit);    
-}
+        guessPane = new PIXI.Container()
+        guessPane.addChild(rectangle)
 
-const wordFruitFontStyle = fontStyles.forestWordTextStyle
-function createWordFruit(pixi, worldEngine, position, word, appleTexture) {    
-    
-    const x = worldEngine.getTilePosXFor(position.r, position.c)
-    const y = worldEngine.getTilePosYFor(position.r, position.c)
+        guessPane.x = (appContext.effectiveWidth / 2) - (paneWidth / 2)
+        guessPane.y = (appContext.effectiveHeight / 2) - (paneHeight / 2)
 
-    const wordText = new PIXI.Text(word.turkish, wordFruitFontStyle)
-    const textWidth = wordText.width
-    wordText.x = x - (textWidth / 2);
-    wordText.y = y - 85;
-    
-    const appleSprite = new pixi.Sprite(appleTexture)            
-    appleSprite.x = x - 15;
-    appleSprite.y = y - 115
-    appleSprite.width = 30
-    appleSprite.height = 30
-    
-    const wordFruit = new PIXI.Container();        
-    wordFruit.addChild(wordText)
-    wordFruit.addChild(appleSprite)
+        const titleText = new PIXI.Text(word.turkish, fontStyles.guessWordMainTextStyle);
+        titleText.anchor.set(0.5, 0.5)
+        titleText.x = paneWidth / 2
+        titleText.y = 35
+        guessPane.addChild(titleText)
 
-    wordFruit.interactive = true;
-    wordFruit.buttonMode = true;
-
-    wordFruit.on('pointerup', () => {
-        lastTargetWord = {
-            r: position.r,
-            c: position.c,
-            word 
-        }
-    })
-
-    return wordFruit
-}
-
-function getTreePositions(worldEngine) {
-
-    let allPositions = _.flatten(
-        Array(worldEngine.mapSizeC)
-        .fill(-1)
-        .map((value,index) => index)
-        .map(colIndex => {
-            return Array(worldEngine.mapSizeR)
-                .fill(-1)
-                .map((value,index) => { return { r: index, c: colIndex}})
+        const options = buildWordOptions([word])
+        const buttonWidth = paneWidth - 50
+        const buttonHeight = 40
+        options.forEach((optionWord, index) => {
+            
+            guessPane.addChild(createGuessOptionButton(
+                optionWord,
+                buttonWidth,
+                buttonHeight,
+                (paneWidth / 2) - (buttonWidth / 2),
+                35 + ((index + 1) * 45),
+                word.turkish == optionWord.turkish
+            ))
         })
-    )
-    let treePositions = allPositions.filter(pos => {
-        const itemsAtLocation = worldEngine.getObjectsAtLocation(pos)
-        return itemsAtLocation && itemsAtLocation.filter(i => i.type > 0 && i.type <= 5).length
-    })
 
-    return treePositions
+        appContext.app.stage.addChild(guessPane)
+    }
+
+    const createGuessOptionButton = function(word, buttonWidth, buttonHeight, xOffset, yOffzet, isCorrectAnswer) {
+
+        const rectangle = new PIXI.Graphics();
+        const backgroundColor = 0x00
+        rectangle.beginFill(backgroundColor)
+        rectangle.lineStyle(4, 0x242424, 1)
+        rectangle.drawRoundedRect(0, 0, buttonWidth, buttonHeight, 5)
+        rectangle.endFill()
+
+        const button = new PIXI.Container()
+        button.addChild(rectangle)
+
+        const optionText = new PIXI.Text(word.english, fontStyles.guessWordOptionTextStyle);
+        optionText.x = buttonWidth / 2 - optionText.width / 2
+        optionText.y = buttonHeight /2 - optionText.height / 2
+
+        button.addChild(optionText)
+        button.x = xOffset
+        button.y = yOffzet
+
+        button.interactive = true
+        button.buttonMode = true
+
+        button.on('pointerup', () => {
+            guessPane.removeChildren(2, 11)
+            let resultText
+            if(isCorrectAnswer) {
+                resultText = new PIXI.Text("Correct!", fontStyles.guessWordCorrect);
+            } else {
+                resultText = new PIXI.Text("Wrong!", fontStyles.guessWordIncorrect);
+            }
+
+            resultText.x = guessPane.width / 2 - resultText.width / 2
+            resultText.y = guessPane.height / 2 - resultText.height
+
+            guessPane.addChild(resultText)
+
+            setTimeout(() => {
+                appContext.app.stage.removeChild(guessPane)
+                guessPane = null
+            }, 1000)
+        })
+
+        return button
+    }
+
+    const buildWordOptions = function(existingOptions) {
+        if(existingOptions.length == 9)
+            return _.shuffle(existingOptions)
+
+        return buildWordOptions(
+            _.uniqBy(
+                existingOptions.concat(
+                    _.sample(appContext.wordDatabase.all)
+                ),
+                w => w.turkish
+            )
+        )
+    }
+
+    const spreadSomeWords= function() {
+        let treePositions = getTreePositions()    
+
+        const appleTexture = PIXI.loader.resources["assets/apple.png"].texture    
+        //appleTexture.frame = new pixi.Rectangle(0, 0, 95, 95)    
+
+        treePositions.forEach(p => {
+            const word = _.sample(appContext.wordDatabase.all)
+            addWordAtLocation(p, word, appleTexture)
+        })
+    }
+
+    const addWordAtLocation = function (position, word, appleTexture) {
+        const wordFruit = createWordFruit( position, word, appleTexture)
+        window.wf = window.wf || []
+        window.wf.push(wordFruit)
+        engine.mapContainer.addChild(wordFruit);    
+    }
+
+    const wordFruitFontStyle = fontStyles.forestWordTextStyle
+    const createWordFruit = function(position, word, appleTexture) {    
+        
+        const x = engine.getTilePosXFor(position.r, position.c)
+        const y = engine.getTilePosYFor(position.r, position.c)
+
+        const wordText = new PIXI.Text(word.turkish, wordFruitFontStyle)
+        const textWidth = wordText.width
+        wordText.x = x - (textWidth / 2);
+        wordText.y = y - 85;
+        
+        const appleSprite = new PIXI.Sprite(appleTexture)            
+        appleSprite.x = x - 15;
+        appleSprite.y = y - 115
+        appleSprite.width = 30
+        appleSprite.height = 30
+        
+        const wordFruit = new PIXI.Container();        
+        wordFruit.addChild(wordText)
+        wordFruit.addChild(appleSprite)
+
+        wordFruit.interactive = true;
+        wordFruit.buttonMode = true;
+
+        wordFruit.on('pointerup', () => {
+
+            const currentPosition = engine.getCurrentControllable().mapPos
+            const dist = calculateDistance(currentPosition, position)
+
+            if(dist <= WORD_MAX_DISTANCE) {
+                guessWord(word)
+            } else {
+                lastTargetWord = {
+                    pos: {
+                        r: position.r,
+                        c: position.c
+                    },
+                    word 
+                }
+                console.log("Target word set")
+            }
+        })
+
+        return wordFruit
+    }
+
+    const getTreePositions = function() {
+
+        let allPositions = _.flatten(
+            Array(engine.mapSizeC)
+            .fill(-1)
+            .map((value,index) => index)
+            .map(colIndex => {
+                return Array(engine.mapSizeR)
+                    .fill(-1)
+                    .map((value,index) => { return { r: index, c: colIndex}})
+            })
+        )
+        let treePositions = allPositions.filter(pos => {
+            const itemsAtLocation = engine.getObjectsAtLocation(pos)
+            return itemsAtLocation && itemsAtLocation.filter(i => i.type > 0 && i.type <= 5).length
+        })
+
+        return treePositions
+    }
+
+    engine = createWorldEngine()
+
+    const getEngine = function() {
+        return engine
+    }
+
+    return {
+        getEngine
+    }
+
 }
 
 module.exports = {
-    createWorldEngine,
-    playWorld,
-    spreadSomeWords,
-    getTreePositions
+    createWorld
 }

@@ -108,12 +108,8 @@ function init() {
     }
 
     function createTurkey() {
-        appContext.currentWorldEngine = forestWorld.createWorldEngine(
-            appContext.effectiveWidth,
-            appContext.effectiveHeight,
-            () => forestWorld.playWorld(PIXI, appContext.currentWorldEngine, appContext.wordDatabase)
-        )
-        appContext.app.stage.addChild(appContext.currentWorldEngine);
+        appContext.currentWorld = forestWorld.createWorld(appContext)
+        appContext.app.stage.addChild(appContext.currentWorld.getEngine());
     }
 
     async function setTheStage() {           
