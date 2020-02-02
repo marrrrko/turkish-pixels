@@ -35,6 +35,8 @@ function createWorld(appContext) {
             },
             backgroundColor: 0x356e08,
             engineInstanceReadyCallback: playWorld,
+            tileSelectCallback: tileSelected,
+            objectSelectCallback: objectSelected,
             objectReachedDestinationCallback: playerHasReachedDestination
         }
 
@@ -52,6 +54,14 @@ function createWorld(appContext) {
         , 0.5)
     }
 
+    const tileSelected = function(tileNumber) {
+        closeGuessPaneIfOpen()        
+    }
+
+    const objectSelected = function(view) {
+        console.log(`Object selected: ${JSON.stringify(view)}`)
+    }
+
     const WORD_MAX_DISTANCE = 1.5
     const playerHasReachedDestination = function(view) {
         if(lastTargetWord) {            
@@ -59,14 +69,14 @@ function createWorld(appContext) {
 
             if(distanceToClickedWord <= WORD_MAX_DISTANCE) {
                 setTimeout(() => {                    
-                    guessWord(lastTargetWord.word)
+                    guessWord(lastTargetWord.word, lastTargetWord.fruit)
                     lastTargetWord = null
                 }, 250)
             }
         }
     }
 
-    const guessWord = function(word) {
+    const guessWord = function(word, fruit) {
 
         const paneWidth = 300
         const paneHeight = 500
@@ -74,7 +84,7 @@ function createWorld(appContext) {
         const rectangle = new PIXI.Graphics();
         const backgroundColor = 0xffd000
         rectangle.beginFill(backgroundColor)
-        rectangle.lineStyle(4, 0x242424, 1)
+        rectangle.lineStyle(4, 0xAFAFAF, 1)
         rectangle.drawRoundedRect(0, 0, paneWidth, paneHeight, 10)
         rectangle.endFill()
 
@@ -93,14 +103,16 @@ function createWorld(appContext) {
         const options = buildWordOptions([word])
         const buttonWidth = paneWidth - 50
         const buttonHeight = 40
+        const xOffset = (paneWidth / 2) - (buttonWidth / 2)        
         options.forEach((optionWord, index) => {
-            
+            const yOffset = 35 + ((index + 1) * 45)
             guessPane.addChild(createGuessOptionButton(
                 optionWord,
+                fruit,
                 buttonWidth,
                 buttonHeight,
-                (paneWidth / 2) - (buttonWidth / 2),
-                35 + ((index + 1) * 45),
+                xOffset,
+                yOffset,
                 word.turkish == optionWord.turkish
             ))
         })
@@ -108,7 +120,7 @@ function createWorld(appContext) {
         appContext.app.stage.addChild(guessPane)
     }
 
-    const createGuessOptionButton = function(word, buttonWidth, buttonHeight, xOffset, yOffzet, isCorrectAnswer) {
+    const createGuessOptionButton = function(word, fruit, buttonWidth, buttonHeight, xOffset, yOffzet, isCorrectAnswer) {
 
         const rectangle = new PIXI.Graphics();
         const backgroundColor = 0x00
@@ -144,14 +156,19 @@ function createWorld(appContext) {
             resultText.y = guessPane.height / 2 - resultText.height
 
             guessPane.addChild(resultText)
+            engine.mapContainer.removeChild(fruit)
 
-            setTimeout(() => {
-                appContext.app.stage.removeChild(guessPane)
-                guessPane = null
-            }, 1000)
+            setTimeout(closeGuessPaneIfOpen, 1000)
         })
 
         return button
+    }
+
+    const closeGuessPaneIfOpen = function() {
+        if(guessPane) {
+            appContext.app.stage.removeChild(guessPane)
+            guessPane = null
+        }
     }
 
     const buildWordOptions = function(existingOptions) {
@@ -181,7 +198,7 @@ function createWorld(appContext) {
     }
 
     const addWordAtLocation = function (position, word, appleTexture) {
-        const wordFruit = createWordFruit( position, word, appleTexture)
+        const wordFruit = createWordFruit(position, word, appleTexture)
         window.wf = window.wf || []
         window.wf.push(wordFruit)
         engine.mapContainer.addChild(wordFruit);    
@@ -217,14 +234,15 @@ function createWorld(appContext) {
             const dist = calculateDistance(currentPosition, position)
 
             if(dist <= WORD_MAX_DISTANCE) {
-                guessWord(word)
+                guessWord(word, wordFruit)
             } else {
                 lastTargetWord = {
                     pos: {
                         r: position.r,
                         c: position.c
                     },
-                    word 
+                    word,
+                    fruit: wordFruit
                 }
                 console.log("Target word set")
             }
