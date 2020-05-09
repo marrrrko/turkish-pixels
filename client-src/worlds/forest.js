@@ -1,39 +1,32 @@
 const fontStyles = require('../font-styles')
 const _ = require('lodash')
 const PIXI = require('pixi.js')
+const actions = require('../state/actions')
+const events = require('events');
+const eventEmitter = new events.EventEmitter();
 
-function createWorld(appContext) {
+function createWorld(stateStore, appContext) {
 
     let lastTargetWord = null
     let engine = null
-    let guessPane = null
+    let guessPane = null    
 
     const createWorldEngine = function() {    
 
         const engineConfig = {
             mapDataPath: "assets/forest-map.json", 
-            assetsToLoad: [
-                "assets/grass_s.png",
-                "assets/vox/rocas_1_s.png",
-                "assets/vox/arbol_1_s.png",
-                "assets/vox/arbol_2_s.png",
-                "assets/vox/arbol_3_s.png",
-                "assets/vox/arbol_4_s.png",
-                "assets/vox/arbol_5_s.png",
-                "assets/fred_map_s.json"
-            ],
-            tileHeight: 98,
-            isoAngle: 36,
+            tileHeight: 161,
+            isoAngle: 27,
             mapDraggable: false,
             highlightPath: false,
             highlightTargetTile: false,
             initialPositionFrame: { 
-                x: 00,
+                x: 0,
                 y: 0,
                 w: appContext.effectiveWidth,
                 h: appContext.effectiveHeight
             },
-            backgroundColor: 0x356e08,
+            backgroundColor: 0xFFEABF,
             engineInstanceReadyCallback: playWorld,
             tileSelectCallback: tileSelected,
             objectSelectCallback: objectSelected,
@@ -54,7 +47,7 @@ function createWorld(appContext) {
         , 0.5)
     }
 
-    const tileSelected = function(tileNumber) {
+    const tileSelected = function(tileNumber) {        
         closeGuessPaneIfOpen()        
     }
 
@@ -74,6 +67,20 @@ function createWorld(appContext) {
                 }, 250)
             }
         }
+
+        if(playerIsInExitToVillage(view.mapPos)) {
+            eventEmitter.emit("relocate", "village", "forest")
+        } else {
+            console.log(`Arrived at r/w ${view.mapPos.r}/${view.mapPos.c}`)
+        }
+    }
+
+    const playerIsInExitToVillage = function(mapPos) {
+        if(mapPos.r >= 36 && mapPos.c <= 3) {
+            return true
+        }
+
+        return false
     }
 
     const guessWord = function(word, fruit) {
@@ -148,6 +155,7 @@ function createWorld(appContext) {
             let resultText
             if(isCorrectAnswer) {
                 resultText = new PIXI.Text("Correct!", fontStyles.guessWordCorrect);
+                stateStore.dispatch(actions.guessedWordCorrectly(word.id, new Date))
             } else {
                 resultText = new PIXI.Text("Wrong!", fontStyles.guessWordIncorrect);
             }
@@ -199,8 +207,8 @@ function createWorld(appContext) {
 
     const addWordAtLocation = function (position, word, appleTexture) {
         const wordFruit = createWordFruit(position, word, appleTexture)
-        window.wf = window.wf || []
-        window.wf.push(wordFruit)
+        //window.wf = window.wf || []
+        //window.wf.push(wordFruit)
         engine.mapContainer.addChild(wordFruit);    
     }
 
@@ -244,7 +252,6 @@ function createWorld(appContext) {
                     word,
                     fruit: wordFruit
                 }
-                console.log("Target word set")
             }
         })
 
@@ -284,5 +291,6 @@ function createWorld(appContext) {
 }
 
 module.exports = {
-    createWorld
+    createWorld,
+    eventEmitter
 }
